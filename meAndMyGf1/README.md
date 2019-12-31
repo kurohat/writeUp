@@ -1,4 +1,9 @@
-# Description
+# Me and My Girlfriend: 1
+* URL: https://www.vulnhub.com/entry/me-and-my-girlfriend-1,409/
+* Date release: 13 Dec 2019
+* Author: [TW1C3](https://www.vulnhub.com/author/tw1c3,664/)
+* Series: [Me and My Girlfriend](https://www.vulnhub.com/series/me-and-my-girlfriend,267/)
+
 This VM tells us that there are a couple of lovers namely Alice and Bob, where the couple was originally very romantic, but since Alice worked at a private company, "Ceban Corp", something has changed from Alice's attitude towards Bob like something is "hidden", And Bob asks for your help to get what Alice is hiding and get full access to the company!
 
 * Difficulty LevelBeginner
