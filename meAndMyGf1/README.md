@@ -174,20 +174,10 @@ FINALLY!! I found her ! my target, ALICE (```user_id=5```).
 <img src="/meAndMyGf1/pic/alice.png">
 </p>
 
-I then user Alice's credential to login to the company machine. **MASHALLAH ! I'M IN**
-<p align="center">
-<img src="/meAndMyGf1/pic/in.png">
-</p>
+Remember when I did nmap to scan the server? (scroll up if you dont remenber). Note that the **SSH** is open. I then user Alice's credential to login to the company machine by using **SSH** -> run  ```ssh alice@ipAddr``` . **MASHALLAH ! I'M IN**
 
-To list all file in the directory run ```ls``` BUT there is nothing here. I then use ```ls -la``` or ```ls -a``` to list all file including the hidden file. OMG I FOUND IT, I FOUND HER SECRET!! Let me call BOB and keep him updated. The picture below shows the result. 
-<p align="center">
-<img src="/meAndMyGf1/pic/secret.png">
-</p>
+
+To list all file in the directory run ```ls``` BUT there is nothing here. I then use ```ls -la``` or ```ls -a``` to list all file including the hidden file. OMG I FOUND IT, I FOUND HER SECRET!! Let me call BOB and keep him updated. The picture below shows the result.
+
 
 To move inside the ***.my_secret*** directory run ```cd .my_secret``` follow by ```ls``` again to list all file. **I FOUND THE FIRST FLAG!!!** inside ***.my_secret*** there is two files, ***flag1.txt*** ***my_notes.txt*** which contain some bad stuff about bob... I should let him know about this. To view the file's content, run ```cat [file's name]```. The figure below shows files content.
-<p align="center">
-<img src="/meAndMyGf1/pic/flag.png">
-</p>
-<p align="center">
-<img src="/meAndMyGf1/pic/note.png">
-</p>
