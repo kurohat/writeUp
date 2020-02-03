@@ -84,3 +84,32 @@ bandit4@bandit:~$ find . -size 1033c -type f -exec file {} + | grep ASCII
 bandit5@bandit:~/inhere$ cat ./maybehere07/.file2
 DXjZPULLxYr17uwoI01bNLQbtFemEgo7
 ```
+
+# LV6
+- somewhere on the server = can be anywhere -> move to root directory by ```cd /```
+- find owner ```find -user```
+- find group ```find -group```
+LINK:
+https://www.cyberciti.biz/faq/how-do-i-find-all-the-files-owned-by-a-particular-user-or-group/
+
+```console
+root@kali:~# ssh bandit6@bandit.labs.overthewire.org -p 2220
+bandit6@bandit:~$ cd /
+[1]+  Done                    cd  (wd: ~)
+(wd now: /)
+bandit6@bandit:/$ find . -user bandit7 -group bandit6 -size 33c
+find: ‘./run/lvm’: Permission denied
+find: ‘./run/screen/S-bandit25’: Permission denied
+.
+.
+.
+./var/lib/dpkg/info/bandit7.password
+.
+.
+.
+find: ‘./proc/12189/fd/5’: No such file or directory
+find: ‘./proc/12189/fdinfo/5’: No such file or directory
+find: ‘./boot/lost+found’: Permission denied
+bandit6@bandit:/$ cat ./var/lib/dpkg/info/bandit7.password
+HKBPTKQnIay4Fw76bEy8PVxKEDQRKTzs
+```
