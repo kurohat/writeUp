@@ -113,3 +113,60 @@ find: ‘./boot/lost+found’: Permission denied
 bandit6@bandit:/$ cat ./var/lib/dpkg/info/bandit7.password
 HKBPTKQnIay4Fw76bEy8PVxKEDQRKTzs
 ```
+# LV7
+
+```console
+root@kali:~# ssh bandit7@bandit.labs.overthewire.org -p 2220
+bandit7@bandit:~$ cat data.txt | grep millionth
+millionth       cvX2JJa4CFALtqS87jk27qwqGhBM9plV
+```
+# LV8
+
+```console
+root@kali:~# ssh bandit8@bandit.labs.overthewire.org -p 2220
+bandit8@bandit:~$ sort data.txt | uniq -u
+UsvVyFSfZZWbi6wgC7dAFyFuR6jQQUhR
+```
+```sort data.txt | uniq -u``` sort data filter by uniq value
+
+# LV9
+
+```console
+root@kali:~# ssh bandit9@bandit.labs.overthewire.org -p 2220
+bandit9@bandit:~$ strings data.txt | grep ==
+2========== the
+========== password
+========== isa
+========== truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk
+```
+
+# LV10
+```console
+root@kali:~# ssh bandit10@bandit.labs.overthewire.org -p 2220
+bandit10@bandit:~$ base64 -d data.txt 
+The password is IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR
+```
+```-d``` for decode.
+
+# LV11
+- ROT13
+
+| input                      | output                     |
+|----------------------------|----------------------------|
+| ABCDEFGHIJKLMNOPQRSTUVWXYZ | NOPQRSTUVWXYZABCDEFGHIJKLM |
+| abcdefghijklmnopqrstuvwxyz | nopqrstuvwxyzabcdefghijklm |
+
+```console
+root@kali:~# ssh bandit11@bandit.labs.overthewire.org -p 2220
+bandit11@bandit:~$ cat data.txt | tr '[A-Za-z]' '[NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm]'
+The password is 5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu
+```
+
+# LV12
+```console
+root@kali:~# ssh bandit12@bandit.labs.overthewire.org -p 2220
+bandit12@bandit:~$ mkdir /tmp/kuroHat
+bandit12@bandit:~$ cp data.txt /tmp/kuroHat
+bandit12@bandit:~$ cd /tmp/kuroHat
+
+```
