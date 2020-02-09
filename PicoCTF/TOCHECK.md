@@ -1,0 +1,7 @@
+```console
+pidof
+pkill
+nikto
+```
+
+
