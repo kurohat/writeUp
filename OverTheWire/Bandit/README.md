@@ -397,3 +397,50 @@ copy and paste the RSA private key file. Now SSH to bandit17 using the key
 bandit14@bandit:/tmp/kuro16$ chmod 600 bandit16key 
 bandit14@bandit:/tmp/kuro16$ ssh -i bandit16key bandit17@localhost
 ```
+
+# LV 17
+There are 2 files in the homedirectory: **passwords.old and passwords.new**. The password for the next level is in **passwords.new** and is the only line that has been changed between **passwords.old and passwords.new**
+
+**NOTE: if you have solved this level and see ‘Byebye!’ when trying to log into bandit18, this is related to the next level, bandit19**
+
+```console
+bandit17@bandit:~$ ls
+passwords.new  passwords.old
+bandit17@bandit:~$ diff passwords.old passwords.new
+42c42
+< hlbSBPAWJmL6WFDb06gpTx1pPButblOA
+---
+> kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd
+```
+42c42 = line 42 of 1st file is different than line 42 of 2nd file
+
+``<`` are lines from the 1st file
+
+``>`` are lines from the 2st file
+
+changed between **passwords.old and passwords.new** -> password = ```kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd```
+
+# LV 18
+
+```
+Level Goal
+The password for the next level is stored in a file readme in the homedirectory. Unfortunately, someone has modified .bashrc to log you out when you log in with SSH.
+
+Commands you may need to solve this level: ssh, ls, cat
+```
+Since someone has modified .bashrc to log you out when you log in with SSH.
+There are many solution to this lv,
+1. tell ssh to launch the bash shell instead of logging directly into bandit18 user shell
+2. use ssh to run a bash command on the remote server [](https://www.shellhacks.com/ssh-execute-remote-command-script-linux/)
+
+Here is how to use ssh to run a bash command on the remote server
+
+```console
+$ ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+
+bandit18@bandit.labs.overthewire.org's password: 
+IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x
+```
+
+# LV 19
