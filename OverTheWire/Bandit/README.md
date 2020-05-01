@@ -431,7 +431,7 @@ Commands you may need to solve this level: ssh, ls, cat
 Since someone has modified .bashrc to log you out when you log in with SSH.
 There are many solution to this lv,
 1. tell ssh to launch the bash shell instead of logging directly into bandit18 user shell
-2. use ssh to run a bash command on the remote server [](https://www.shellhacks.com/ssh-execute-remote-command-script-linux/)
+2. use ssh to run a bash command on the remote server [link](https://www.shellhacks.com/ssh-execute-remote-command-script-linux/)
 
 Here is how to use ssh to run a bash command on the remote server
 
@@ -444,3 +444,69 @@ IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x
 ```
 
 # LV 19
+```
+Level Goal
+To gain access to the next level, you should use the setuid binary in the homedirectory. Execute it without arguments to find out how to use it. The password for this level can be found in the usual place (/etc/bandit_pass), after you have used the setuid binary.
+```
+[setuid](https://en.wikipedia.org/wiki/Setuid)
+
+in home directory you will fine ./bandit20-do. this program allow you to execute bash command as bandit20. So just ```cat``` the ```/etc/bandit_pass/bandit20``` to see the password
+
+```console
+bandit19@bandit:~$ ./bandit20-do
+Run a command as another user.
+  Example: ./bandit20-do id
+bandit19@bandit:~$ ./bandit20-do cat /etc/bandit_pass/bandit20
+GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+```
+
+# LV 20
+```
+Level Goal
+There is a setuid binary in the homedirectory that does the following: it makes a connection to localhost on the port you specify as a commandline argument. It then reads a line of text from the connection and compares it to the password in the previous level (bandit20). If the password is correct, it will transmit the password for the next level (bandit21).
+
+NOTE: Try connecting to your own network daemon to see if it works as you think
+
+Commands you may need to solve this level:
+
+ssh, nc, cat, bash, screen, tmux, Unix ‘job control’ (bg, fg, jobs, &, CTRL-Z, …)
+
+```
+
+```console
+$ ls
+suconnect
+$ ./suconnect 
+Usage: ./suconnect <portnumber>
+This program will connect to the given port on localhost using TCP. If it receives the correct password from the other side, the next password is transmitted back.
+```
+in a simple word, the program will act as a client and connect to a "server" (which we need to set up). The program will send the password for next lv (bandit21) back to the server **only if** it receives the correct password (bandit20) from the server. This means the "server"  need to send ```GbKksEFF4yrVs6il55v6gwY5aVje5f0j``` to the client (program) when the connection is established
+
+to solve this, we need to run **an experiment on our machine**:
+```nc``` or netcat can be use for many tasks (check ```man nc```). we will use ```nc -l -p [port]``` to listen to a specific port for connections. open another tab and run ```nc localhost [port]```. at this point you can now send messages on either side of the connection and they will be seen on either end. [How To Use Netcat to Establish and Test TCP and UDP Connections on a VPS](https://www.digitalocean.com/community/tutorials/how-to-use-netcat-to-establish-and-test-tcp-and-udp-connections-on-a-vps)
+
+Now let try something else, we will try to echo "wazzap" when a connection is established on port 22222. Then we use another tab to connect to port 22222. let see what happen
+```console
+$ echo "wazzap" | nc -l -p 22222 # tab 1 "server"
+$ nc localhost 22222 # tab 2 "client"
+wazzap
+```
+At you can see, tab2 (client) got a wazzap text from tab1 (server)
+
+
+Now just apply the same concept on bandit20 by open 2 tab using ```screen``` which is a terminal emulator (check ```man screen```). we dont need to open two tab and ssh to bandit 20 if we use ```screen```. However, if you want to open 2 tab then just skip the screen part.
+```console
+$ screen
+$ echo "GbKksEFF4yrVs6il55v6gwY5aVje5f0j" | nc -l -p 22222 # tab 1 "server"
+$ # press ctrl + a + d to go back to original screen
+$ # now we are back to original screen
+$ ./suconnect 22222
+Read: GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+Password matches, sending next password
+$ # it works, let go back to our old screen
+$ screen -list # find out which screen is up
+$ screen -r pid.tty.name # jump to the screen which we run the server on
+$ echo "GbKksEFF4yrVs6il55v6gwY5aVje5f0j" | nc -l -p 22222
+gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
+```
+password: ```gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr```
