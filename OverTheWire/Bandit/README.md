@@ -509,7 +509,7 @@ $ screen -r pid.tty.name # jump to the screen which we run the server on
 $ echo "GbKksEFF4yrVs6il55v6gwY5aVje5f0j" | nc -l -p 22222
 gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
 ```
-password: ```gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr```
+password to next lv : ```gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr```
 
 
 another way to do it
@@ -522,3 +522,34 @@ Password matches, sending next password
 gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
 [1]+  Done                    echo "GbKksEFF4yrVs6il55v6gwY5aVje5f0j" | nc -l -p 22222
 ```
+
+# LV 21
+```
+Level Goal
+
+A program is running automatically at regular intervals from cron, the time-based job scheduler. Look in /etc/cron.d/ for the configuration and see what command is being executed.
+
+Commands you may need to solve this level:
+
+cron, crontab, crontab(5) (use “man 5 crontab” to access this)
+```
+
+```console
+bandit21@bandit:~$ ls /etc/cron.d/
+atop  cronjob_bandit22  cronjob_bandit23  cronjob_bandit24
+bandit21@bandit:~$ cat /etc/cron.d/cronjob_bandit22
+@reboot bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+* * * * * bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+bandit21@bandit:~$ cat /usr/bin/cronjob_bandit22.sh # what do this program do?
+#!/bin/bash
+chmod 644 /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+cat /etc/bandit_pass/bandit22 > /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+$ aha cat the password to bandit 22 and put it in /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+bandit21@bandit:~$ /usr/bin/cronjob_bandit22.sh # run it
+chmod: changing permissions of '/tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv': Operation not permitted
+/usr/bin/cronjob_bandit22.sh: line 3: /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv: Permission denied
+bandit21@bandit:~$ cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv # open it
+Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
+```
+
+password to next lv : ```Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI```
