@@ -81,9 +81,9 @@ Open the pcap with wireshark. select Go -> Go to packet
 ## What item is on the Christmas list?
 right click on packet number 998 -> follow -> tcp stream: here is what you will find out
 ```console
-echo '***' > christmas_list.txt
+echo 'XXX' > christmas_list.txt
 ```
-```***``` is the answer to this question
+```XXX``` is the answer to this question
 ## Crack buddy's password!
 to understand the structure of /etc/shadow read [link](https://linuxize.com/post/etc-shadow-file/)
 ```buddy:$6$3GvJsNPG$ZrSFprHS13divBhlaKg1rYrYLJ7m1xsYRKxlLh0A1sUc/6SUd7UvekBOtSnSyBwk3vCDqBhrgxQpkdsNN6aYP1:18233:0:99999:7:::```
@@ -98,6 +98,36 @@ kali@kali:~$ cat hash.lst
 buddy:$6$3GvJsNPG$ZrSFprHS13divBhlaKg1rYrYLJ7m1xsYRKxlLh0A1sUc/6SUd7UvekBOtSnSyBwk3vCDqBhrgxQpkdsNN6aYP1:18233:0:99999:7:::
 kali@kali:~$ hashcat -m 1800 -a 0 -o buddy.txt hash.lst /usr/share/wordlists/rockyou.txt --force
 kali@kali:~$ cat buddy.txt 
-$6$3GvJsNPG$ZrSFprHS13divBhlaKg1rYrYLJ7m1xsYRKxlLh0A1sUc/6SUd7UvekBOtSnSyBwk3vCDqBhrgxQpkdsNN6aYP1:*******
+$6$3GvJsNPG$ZrSFprHS13divBhlaKg1rYrYLJ7m1xsYRKxlLh0A1sUc/6SUd7UvekBOtSnSyBwk3vCDqBhrgxQpkdsNN6aYP1:XXXXXXX
 ```
-find out what ```*******``` is. GL
+find out what ```XXXXXXX``` is. GL
+
+# Day 4: Training 
+```
+With the entire incident, McElferson has been very stressed.
+
+We need all hands on deck now
+
+To help resolve things faster, she has asked you to help the new intern(mcsysadmin) get familiar with Linux. 
+Access the machine via SSH on port 22 using the command
+
+ssh mcsysadmin@[your-machines-ip]
+
+username: mcsysadmin
+password: bestelf1234
+```
+
+```console
+$ ls | wc -l #1
+$ cat file5 #2
+$ grep -lR "password" #3
+$ grep -lRE "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" # find the file that contain ip address
+$ grep -E "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" fileX #4
+$ cat /etc/passwd | grep "/bin/bash" | wc -l #5
+$ openssl sha1 file8 #6
+$ find / -name "*shadow*" > shadow.txt # find all file name shadow and output it as a shadow.txt
+$ cat shadow.txt # and look for the file
+$ cat xxx/xxxx.bak # GL fild out what xxx is
+```
+useful link
+1. [regex ip](https://www.putorius.net/grep-an-ip-address-from-a-file.html)
