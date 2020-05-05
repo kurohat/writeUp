@@ -131,3 +131,103 @@ $ cat xxx/xxxx.bak # GL fild out what xxx is
 ```
 useful link
 1. [regex ip](https://www.putorius.net/grep-an-ip-address-from-a-file.html)
+
+# Day 5: Ho-Ho-Hosint 
+```
+Elf Lola is an elf-of-interest. Has she been helping the Christmas Monster? lets use all available data to find more information about her! We must protect The Best Festival Company!
+```
+
+## What is Lola's date of birth? Format: Month Date, Year(e.g November 12, 2019)
+A tool call ```exiftool``` can be used to examining img meta data. to install it run ```sudo apt install libimage-exiftool-perl```
+```console
+kali@kali:~$ exiftool Desktop/thegrinch.jpg 
+ExifTool Version Number         : 11.94
+File Name                       : thegrinch.jpg
+Directory                       : Desktop
+File Size                       : 69 kB
+File Modification Date/Time     : 2020:05:04 20:05:29-04:00
+File Access Date/Time           : 2020:05:04 20:05:29-04:00
+File Inode Change Date/Time     : 2020:05:04 20:05:29-04:00
+File Permissions                : rw-r--r--
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Resolution Unit                 : None
+X Resolution                    : 1
+Y Resolution                    : 1
+XMP Toolkit                     : Image::ExifTool 10.10
+Creator                         : JLolax1
+Image Width                     : 642
+Image Height                    : 429
+Encoding Process                : Progressive DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Image Size                      : 642x429
+Megapixels                      : 0.275
+```
+after googling ```JLolax1``` you will find her twitter. You will find her date of birth there.
+
+## What is Lola's current occupation?
+occupation = job or profession, lol new word everyday.
+You can find the answer on her twitter.
+
+## What phone does Lola make?
+check her twitter
+## What date did Lola first start her photography? Format: dd/mm/yyyy
+In her twitter you will find her web page. To be able to know when she started wiht her hobby we need to get old information/snapshot of her webpage. To do that we need to use [WayBackMachine](https://archive.org/web/). The ```WayBackMachine``` is a digital archive of the World Wide Web. It takes a snapshot of a website and saves it for us to view in the future
+
+
+You can find the anwer in the fist snapshot of her webpage on https://archive.org/web/. GL
+## What famous woman does Lola have on her web page?
+save the picture and use the image serach function on https://www.google.com/imghp?hl=en
+
+# Day 6: Data Elf-iltration 
+```
+"McElferson! McElferson! Come quickly!" yelled Elf-ministrator.
+
+"What is it Elf-ministrator?" McElferson replies.
+
+"Data has been stolen off of our servers!" Elf-ministrator says!
+
+"What was stolen?" She replied.
+
+"I... I'm not sure... They hid it very well, all I know is something is missing" they replied.
+
+"I know just who to call" said McElferson...
+```
+LEARN [here](https://docs.google.com/document/d/17vU134ZfKiiE-DgiynrO0MySo4_VCGCpw2YJV_Kp3Pk/edit)
+## What data was exfiltrated via DNS? 
+open the .pcap with wireshark. search for ```UDP``` packet. you will find some udp packet that has some weird HEXdump. Right click on it and select **follow udp flow**. Copy the hexdump and use ```xxd``` get the plain text.
+```console
+kali@kali:~$ echo "43616e64792043616e652053657269616c204e756d6265722038343931" | xxd -r -p
+```
+## What did Little Timmy want to be for Christmas?
+We learn that you can export http ocject from wirshark. do that! you will. to solve this task, we unzip ```christmaslists.zip```. The file is encrypted. To crack the .zip, we need a tool call 
+```console
+kali@kali:~$ sudo apt-get install fcrackzip
+kali@kali:~$ fcrackzip -b --method 2 -D -p /usr/share/wordlists/rockyou.txt -v Downloads/Day6/christmaslists.zip
+```
+-b specifies brute forcing, --method 2 specifies a Zip file, -D specifies a Dictionary and -V verifies the password is indeed correct
+
+
+After you get the password
+```console
+kali@kali:~$ cd Downloads/Day6/
+kali@kali:~/Downloads/Day6$ sudo unzip -P december christmaslists.zip 
+Archive:  christmaslists.zip
+ extracting: christmaslistdan.tx     
+  inflating: christmaslistdark.txt   
+  inflating: christmaslistskidyandashu.txt  
+  inflating: christmaslisttimmy.txt
+kali@kali:~/Downloads/Day6$ cat christmaslisttimmy.txt 
+```
+## What was hidden within the file?
+```console
+kali@kali:~$ steghide extract -sf Downloads/Day6/TryHackMe.jpg 
+Enter passphrase: 
+steghide: did not write to file "christmasmonster.txt".
+kali@kali:~$ cat christmasmonster.txt
+```
+some cool stuff I learn on the side, check out [here](https://en.wikipedia.org/wiki/April_Fools%27_Day_Request_for_Comments) and [here](https://tools.ietf.org/html/rfc527)
