@@ -1,3 +1,5 @@
+to read [link](https://docs.google.com/document/d/1q0FziVZM3zCWhcgtPpljVPzkBX0fMAh6ebrXVM5rg08/edit)
+
 # Nmap Quiz 
 1. help = -h
 2. Syn Scan = -sS

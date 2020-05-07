@@ -231,3 +231,92 @@ steghide: did not write to file "christmasmonster.txt".
 kali@kali:~$ cat christmasmonster.txt
 ```
 some cool stuff I learn on the side, check out [here](https://en.wikipedia.org/wiki/April_Fools%27_Day_Request_for_Comments) and [here](https://tools.ietf.org/html/rfc527)
+
+# Day 7: Skilling Up
+```
+Previously, we saw mcsysadmin learning the basics of Linux. With the on-going crisis, McElferson has been very impressed and is looking to push mcsysadmin to the security team. One of the first things they have to do is look at some strange machines that they found on their network. 
+```
+## how many TCP ports under 1000 are open?
+```sudo nmap -sS 10.10.37.120```
+## What is the name of the OS of the host?
+```sudo nmap -O 10.10.37.120```
+## What version of SSH is running?
+```sudo nmap -sV -p 22 10.10.37.120```
+## What is the name of the file that is accessible on the server you found running?
+use nmap to scan all port, you will find the answer on port which run http. GL
+
+# Day 8: SUID Shenanigans
+```
+Elf Holly is suspicious of Elf-ministrator and wants to get onto the root account of a server he setup to see what files are on his account. The problem is, Holly is a low-privileged user.. can you escalate her privileges and hack your way into the root account?
+
+Deploy and SSH into the machine.
+Username: holly
+Password: tuD@4vt0G*TU
+
+SSH is not running on the standard port.. You might need to nmap scan the machine to find which port SSH is running on.
+nmap <machine_ip> -p <start_port>-<end_port>
+```
+this one sound FUN !!
+READ this [link](https://blog.tryhackme.com/linux-privilege-escalation-suid/)
+
+## What port is SSH running on?
+```console
+$ sudo nmap -sS -p- 10.10.228.120 # scan all port
+$ sudo nmap -sV -p XXX  10.10.228.120 # scan service on specific port
+```
+## Find and run a file as igor. Read the file /home/igor/flag1.txt
+```console
+$ ssh holly@ip -p <port> # ssh to the target
+$ find / -perm -4000 -exec ls -ldb {} \; > allsuid.txt # find all suid on the machine and output it in a file
+$ cat allsuid.txt | grep "igor" # find the suid for Igor 
+-rwsr-xr-x 1 igor igor 221768 Feb  7  2016 /usr/bin/find
+-rwsr-xr-x 1 igor igor 2770528 Mar 31  2016 /usr/bin/nmap
+$ find /home/igor/flag1.txt -XXXX XXX {} \; # now use find to cat the 
+```
+find out what ```-XXXX XXX``` and you will get the answer.
+
+## Find another binary file that has the SUID bit set. Using this file, can you become the root user and read the /root/flag2.txt file?
+I just gonna give a hint here.
+```console
+cat allsuid.txt | grep "root" 
+```
+here you will find a werid program in bin that you can run as a root user. by weird means, it is not a normalt program that every linux have and there is no man page for that program when you google it. The program will let you execute a command as a root. GL !!
+
+# Day 9: Requests
+```
+McSkidy has been going keeping inventory of all the infrastructure but he finds a random web server running on port 3000. All he receives when accessing '/' is
+
+```{"value":"s","next":"f"}```
+
+
+McSkidy needs to access the next page at /f(which is the value received from the data above) and keep track of the value at each step(in this case 's'). McSkidy needs to do this until the 'value' and 'next' data have the value equal to 'end'.
+
+You can access the machines at the following IP:
+
+    10.10.169.100
+
+Things to note about this challenge:
+
+    The JSON object retrieved will need to be converted from unicode to ASCII(as shown in the supporting material)
+    All the values retrieved until the 'end' will be the flag(end is not included in the flag)
+```
+Read [here](https://docs.google.com/document/d/1FyAnxlQpzh0Cy17cKLsUZYCYqUA3eHu2hm0snilaPL0/edit)
+
+```python
+# made by gu2rks@github
+import requests
+r = requests.get("http://10.10.169.100:3000")
+r = r.json()
+# {"value":"s","next":"f"}
+flag = r["value"]
+while True:
+    r = requests.get("http://10.10.169.100:3000/"+str(r["next"]))
+    r = r.json()
+    if r["next"] == "end":
+        break
+    flag = flag + r["value"]
+
+print("the flag: "+ flag)
+```
+# Day 10: 
+take a breake, need to learn how to use Metaspoil
