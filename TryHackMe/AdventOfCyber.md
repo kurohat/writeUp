@@ -470,3 +470,245 @@ show tables;
 SELECT * FROM [table];
 ```
 GL
+
+# Day 12 :  Elfcryption 
+```
+You think the Christmas Monster is intercepting and reading your messages! Elf Alice has sent you an encrypted message. Its your job to go and decrypt it!
+```
+READ [this](https://docs.google.com/document/d/1xUOtEZOTS_L8u_S5Fbs1Wof7mdpWQrj2NkgWLV9tqns/edit)
+## What is the md5 hashsum of the encrypted note1 file?
+```console
+$ md5sum note1.txt.gpg # check sum
+```
+
+## Where was elf Bob told to meet Alice?
+```console
+$ gpg -d --batch --passphrase 25daysofchristmas note1.txt.gpg
+```
+
+## Decrypt note2 and obtain the flag!
+```console
+$ openssl rsautl -decrypt -inkey private.key -in note2_encrypted.txt -out note2.txt
+$ cat not2.txt
+```
+
+# Day 13 : Accumulate
+```
+mcsysadmin has been super excited with their new security role, but wants to learn even more. In an attempt to show their l33t skills, they have found a new box to play with. 
+
+This challenge accumulates all the things you've learnt from the previous challenges(that being said, it may be a little more difficult than the previous challenges). Here's the general way to attempt exploitation when just given an IP address:
+
+1. Start out with an NMAP scan to see what services are running
+2. Enumerate these services and try exploit them
+3. use these exploited services to get an initial access to the host machine
+4. enumerate the host machine to elevate privileges
+
+```console
+kali@kali:~$ nmap -Pn -A 10.10.182.103
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-11 23:22 EDT
+Nmap scan report for 10.10.182.103
+Host is up (0.048s latency).
+Not shown: 998 filtered ports
+PORT     STATE SERVICE       VERSION
+80/tcp   open  http          Microsoft IIS httpd 10.0
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/10.0
+|_http-title: IIS Windows Server
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info: 
+|   Target_Name: RETROWEB
+|   NetBIOS_Domain_Name: RETROWEB
+|   NetBIOS_Computer_Name: RETROWEB
+|   DNS_Domain_Name: RetroWeb
+|   DNS_Computer_Name: RetroWeb
+|   Product_Version: 10.0.14393
+|_  System_Time: 2020-05-12T03:23:07+00:00
+| ssl-cert: Subject: commonName=RetroWeb
+| Not valid before: 2020-05-11T02:55:18
+|_Not valid after:  2020-11-10T02:55:18
+|_ssl-date: 2020-05-12T03:23:08+00:00; 0s from scanner time.
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 13.72 seconds
+```
+## A web server is running on the target. What is the hidden directory which the website lives on?
+```
+kali@kali:~$ ping 10.10.182.103 # ping is not working
+PING 10.10.182.103 (10.10.182.103) 56(84) bytes of data.
+^C
+--- 10.10.182.103 ping statistics ---
+131 packets transmitted, 0 received, 100% packet loss, time 133099ms
+kali@kali:~$ nmap -Pn 10.10.182.103 # -pn treat the target like it is up, seem like it block icmp
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-11 23:19 EDT
+Nmap scan report for 10.10.182.103
+Host is up (0.051s latency).
+Not shown: 998 filtered ports
+PORT     STATE SERVICE
+80/tcp   open  http
+3389/tcp open  ms-wbt-server
+kali@kali:~$dirbuster& #use wordlist dirbuster2.3 medium
+```
+you will find you answer by runing the dirbuster.
+## Gain initial access and read the contents of user.txt
+check all Wade's posts here ```retro/index.php/author/wade/```you will find some vulable info.
+hint: you can find the password in a comment -> log in to the page.
+if you can log in to the wordpress dashboard page then use the same cerdential and RDP to the server. parzival
+## [Optional] Elevate privileges and read the content of root.txt
+I saw that we have chrome installed. In bookmark you will see this https://nvd.nist.gov/vuln/detail/CVE-2019-1388.
+I saw that there is something in recycle bin, a .exe
+After some reseacrh, I found this [writup](https://www.embeddedhacker.com/2019/12/hacking-walkthrough-thm-cyber-of-advent/#day10), and he mention this [gif](https://raw.githubusercontent.com/jas502n/CVE-2019-1388/master/CVE-2019-1388.gif). Follow this and you will be able to get root. MAKE SURE that you use **IE** when open the certificate, I got some eror and needed to restart the whole machine
+
+
+when you are done that, look around and try to find root.txt. HINT: in ```C:\Users\Admin```
+# Day 14 : Unknown Storage 
+```
+McElferson opens today's news paper and see's the headline
+
+Private information leaked from the best festival company
+
+This shocks her! She calls in her lead security consultant to find out more information about this. How do we not know about our own s3 bucket. 
+
+McSkidy's only starting point is a single bucket name: advent-bucket-one
+```
+READ [this](https://docs.google.com/document/d/13uHBw3L9wdDAFboErSq_QV8omb3yCol0doo6uMGzJWo/edit#). one of the most easy tasks read it and you will able to solve it
+## What is the name of the file you found?
+```http://advent-bucket-one.s3.amazonaws.com/```
+## What is in the file?
+```http://advent-bucket-one.s3.amazonaws.com/somethinghere```
+what should in be in "somethinghere"?
+# Day 15 : LFI 
+```
+Elf Charlie likes to make notes and store them on his server. Are you able to take advantage of this functionality and crack his password? 
+```
+READ [this](https://blog.tryhackme.com/lfi/)
+## What is Charlie going to book a holiday to?
+
+## Read /etc/shadow and crack Charlies password.
+
+## What is flag1.txt?
+
+# Day 16 : File Confusion 
+```
+The Christmas monster got access to some files and made a lot of weird changes. Can you help fix these changes?
+
+Use a (python) script to do the following:
+1. extract all the files in the archives 
+2. extract metadata from the files 
+3. extract text from the files
+```
+READ [this](https://docs.google.com/document/d/13eYEcqpyp3fIAnaDR8PHz6qibBJJwf2Vp5M77KkEKtw/edit#)
+
+## How many files did you extract(excluding all the .zip files)
+
+## How many files contain Version: 1.1 in their metadata?
+
+## Which file contains the password?
+
+# Day 17 : Hydra-ha-ha-haa 
+```
+You suspect Elf Molly is communicating with the Christmas Monster. Compromise her accounts by brute forcing them!
+```
+READ [this](https://blog.tryhackme.com/hydra/)
+## Use Hydra to bruteforce molly's web password. What is flag 1? (The flag is mistyped, its THM, not TMH)
+
+## Use Hydra to bruteforce molly's SSH password. What is flag 2?
+
+# Day 18 : ELF JS 
+```
+McSkidy knows the crisis isn't over. The best thing to do at this point is OSINT
+
+we need to learn more about the christmas monster
+
+During their OSINT, they came across a Hacker Forum. Their research has shown them that this forum belongs to the Christmas Monster. Can they gain access to the admin section of the forum? They haven't made an account yet so make sure to register.
+
+Access the machine at http://[your-ip-address]:3000 - it may take a few minutes to deploy.
+```
+READ [this](https://docs.google.com/document/d/19TJ6ANmM-neOln0cDh7TPMbV9rsLkSDKS3nj0eJaxeg/edit#)
+## What is the admin's authid cookie value?
+
+# Day 19 : Commands
+```
+Another day, another hack from the Christmas Monster. Can you get back control of the system?
+
+Access the web server on http://[your-ip]:3000/
+
+McSkidy actually found something interesting on the /api/cmd endpoint.
+```
+READ [this](https://docs.google.com/document/d/1W65iKmUMtz-srteErhrGFJkWBXJ4Xk5PYlCZVMIZgs8/edit)
+
+## What are the contents of the user.txt file?
+
+# Day 20 : Cronjob Privilege Escalation 
+```
+You think the evil Christmas monster is acting on Elf Sam's account!
+
+Hack into her account and escalate your privileges on this Linux machine.
+```
+## What port is SSH running on?
+
+## Crack sam's password and read flag1.txt
+
+## Escalate your privileges by taking advantage of a cronjob running every minute. What is flag2?
+
+# Day 21 : Reverse Elf-ineering 
+```
+McSkidy has never really touched low level languages - this is something they must learn in their quest to defeat the Christmas monster.
+
+Download the archive and apply the command to the following binary files: chmod +x file-name
+
+Please note that these files are compiled to be executed on Linux x86-64 systems.
+
+The questions below are regarding the challenge1 binary file.
+```
+READ [this](https://drive.google.com/file/d/1maTcdquyqnZCIcJO7jLtt4cNHuRQuK4x/view?usp=sharing)
+## What is the value of local_ch when its corresponding movl instruction is called(first if multiple)?
+
+## What is the value of eax when the imull instruction is called?
+
+## What is the value of local_4h before eax is set to 0?
+
+# Day 22 : If Santa, Then Christmas 
+```
+McSkidy has been faring on well so far with assembly - they got some inside knowledge that the christmas monster is weaponizing if statements. Can they get ahead of the curve?
+
+These programs have been compiled to be executed on Linux x86-64 systems.
+The questions below relate to the if2 binary.
+```
+READ [this](https://docs.google.com/document/d/1cIHd_YQ_PHhkUPMrEDWAIfQFb9M9ge3OFr22HHaHQOU/edit)
+## what is the value of local_8h before the end of the main function?
+
+## what is the value of local_4h before the end of the main function?
+
+# Day 23 : LapLANd (SQL Injection) 
+```
+Santa’s been inundated with Facebook messages containing Christmas wishlists, so Elf Jr. has taken an online course in developing a North Pole-exclusive social network, LapLANd! Unfortunately, he had to cut a few corners on security to complete the site in time for Christmas and now there are rumours spreading through the workshop about Santa! Can you gain access to LapLANd and find out the truth once and for all?
+```
+READ [this](https://docs.google.com/document/d/15XH_T1o6FLvnV19_JnXdlG2A8lj2QtepXMtVQ32QXk0/edit)
+## Which field is SQL injectable? Use the input name used in the HTML code.
+
+## What is Santa Claus' email address?
+
+## What is Santa Claus' plaintext password?
+
+## Santa has a secret! Which station is he meeting Mrs Mistletoe in?
+
+## Once you're logged in to LapLANd, there's a way you can gain a shell on the machine! Find a way to do so and read the file in /home/user/
+
+# Day 24 : Elf Stalk 
+```
+McDatabaseAdmin has been trying out some new storage technology and came across the ELK stack(consisting of Elastic Search, Kibana and Log Stash). 
+
+The Christmas Monster found this insecurely configured instance and locked McDatabaseAdmin out of it. Can McSkidy help to retrieve the lost data?
+
+While this task does not have supporting material, here is a general approach on how to go about this challenge:
+
+1. scan the machine to look for open ports(specific to services running as well)
+2. as with any database enumeration, check if the database requires authentication. If not, enumerate the database to check the tables and records
+3. for other open ports, identify misconfigurations or public exploits based on version numbers
+```
+## Find the password in the database
+
+## Read the contents of the /root.txt file
+
