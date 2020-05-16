@@ -616,7 +616,7 @@ Commands you may need to solve this level
 cron, crontab, crontab(5) (use “man 5 crontab” to access this)
 ```
 okey.. this will be my first time writing a shell scrip too...
-same as last time, check out what it corntab and find the original script
+same as last time, check out what it crontab and find the original script
 ```console
 bandit23@bandit:~$ cat /etc/cron.d/cronjob_bandit24
 @reboot bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
