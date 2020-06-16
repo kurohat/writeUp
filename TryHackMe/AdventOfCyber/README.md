@@ -217,7 +217,7 @@ After you get the password
 kali@kali:~$ cd Downloads/Day6/
 kali@kali:~/Downloads/Day6$ sudo unzip -P december christmaslists.zip 
 Archive:  christmaslists.zip
- extracting: christmaslistdan.tx     
+ extracting: christmaslistdan.tx    
   inflating: christmaslistdark.txt   
   inflating: christmaslistskidyandashu.txt  
   inflating: christmaslisttimmy.txt
