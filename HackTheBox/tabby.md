@@ -310,7 +310,7 @@ in general if the user is a member of lxd group = green card to root. this is wh
 
 
 In kali
-````console 
+```console 
 kali@kali:~/HTB/tabby$ wget https://raw.githubusercontent.com/saghul/lxd-alpine-builder/master/build-alpine # download build-alpine
 kali@kali:~/HTB/tabby$ chmod 777 build-alpine
 kali@kali:~/HTB/tabby$ sudo ./build-alpine  # build it
