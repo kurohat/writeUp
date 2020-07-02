@@ -535,11 +535,6 @@ Nmap done: 1 IP address (1 host up) scanned in 13.72 seconds
 ```
 ## A web server is running on the target. What is the hidden directory which the website lives on?
 ```
-kali@kali:~$ ping 10.10.182.103 # ping is not working
-PING 10.10.182.103 (10.10.182.103) 56(84) bytes of data.
-^C
---- 10.10.182.103 ping statistics ---
-131 packets transmitted, 0 received, 100% packet loss, time 133099ms
 kali@kali:~$ nmap -Pn 10.10.182.103 # -pn treat the target like it is up, seem like it block icmp
 Starting Nmap 7.80 ( https://nmap.org ) at 2020-05-11 23:19 EDT
 Nmap scan report for 10.10.182.103
