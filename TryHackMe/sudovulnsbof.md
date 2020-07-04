@@ -31,3 +31,4 @@ Sorry, try again.
 # whoami
 root
 # cat /root/root.txt
+```
