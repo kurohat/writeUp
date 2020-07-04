@@ -6,7 +6,7 @@ Walkthrough of OS Command Injection. Demonstrate OS Command Injection and explai
 # Blind Command Injection
 Blind command injection occurs when the system call that's being made does not return the response of the call to the Document Object Model (or DOM).
 
-[!php](https://i.imgur.com/lB8diiC.png)
+![php](https://i.imgur.com/lB8diiC.png)
 
 blind command injection occurs when the response of the HTTP request is not returned to the DOM.  You can see in the above code that the response is never returned anywhere on the page.  The only thing that gets returned is an alert that says whether a user was found on the system or not.  For the purposes of this room, I made the alert tell you what was going on, but sometimes it won't be that easy.  So here are a few ways to tell whether you have blind command injection or not.
 
