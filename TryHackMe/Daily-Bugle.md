@@ -1,3 +1,7 @@
+# what I learned
+- SQLmap is slow AF, max thread is 10....
+- Exploiting Joomla version 3.7.0
+- GTFObins yum
 # enumerate
 - 22/tcp   open  ssh
 - 80/tcp   open  http

