@@ -45,7 +45,7 @@ Nmap done: 1 IP address (1 host up) scanned in 14.16 seconds
 
 ## Port 80 Web directory discovering
 ```
-kali@kali:~/THM/dogcat$ gobuster dir -u http://<ip>/ -w /usr/share/SecLists/Discovery/Web-Content/big.txt -x .php,.txt,.html
+kali@kali:~/THM/dogcat$ gobuster dir -u http://<ip>/ -w /usr/share/SecLists/Discovery/Web-Content/big.txt -x .php,.txt,.html -t 54
 ===============================================================
 Gobuster v3.0.1
 by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)

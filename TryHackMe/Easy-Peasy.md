@@ -23,14 +23,14 @@ this is odd. but let go and check what we have. I found a encoded string hidden 
 
 moreover, in robots.txt you will find a weird string:
 ```
-User-Agent:a18672860d0510e5ab6699730763b250
+User-Agent:a1867_______________
 ```
 I use hash analyzer to check which hash type is that. then using `hashcat` to crack it: let move back to `/n0th1__________` directory.
 
 here you will find
 ```html
 <img src="binarycodepixabay.jpg" width="140px" height="140px"/>
-<p>940d71e8655ac41efb5f8ab850668505b86dd64186a66e57d1483e7f5fe6fd81</p>
+<p>940________________________</p>
 ```
 a picture which I guess that this picture might hiding something from us (steganography). I downloaded it and used `binwalk` to analyze the picture... didnt find anything. I then use `hexeditor` to analyze the picture. I was rigth about it, the picture include a hidden file. so I use `stegcracker` to crack it.
 
