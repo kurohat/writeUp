@@ -5,7 +5,7 @@ nmap show us that there are 3 open port:
 - 65524 apache server
 
 ## port 80 ngnix 
-I use gobuster to do recon the web server user
+I use `gobuster` to brute forcing web directory 
 ```console
 $ gobuster dir -u http://$IP/ -w /usr/share/SecLists/Discovery/Web-Content/big.txt -x .php,.txt,.html -t 54
 ```
@@ -16,7 +16,7 @@ here is what I found:
 - /robots.txt (Status: 200)
 The first flag is in one of the directory. Note that the flag is encoded. encode it and summit ur flag.
 ## port 65524 apache
-Same as port 80, we use gobuster to directory brute forcing. In the meantime I was waiting for result from go buster. I looks around and find the 3rd flag. here is what I found with gobuster.
+Same as port 80, use `gobuster` for directory brute forcing. In the meantime I was waiting for result from go buster. I looks around and find the 3rd flag. here is what I found with gobuster.
 - /index.html (Status: 200)
 - /robots.txt (Status: 200)
 this is odd. but let go and check what we have. I found a encoded string hidden in `/index.html`. decode it and it will give you a hidden directory call `/n0th1__________`.

