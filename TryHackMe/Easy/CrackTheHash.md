@@ -22,3 +22,13 @@ $ ehco "$6$aReallyHardSalt$6WKUTqzq.UQQmrm0p/T7MPpMbGNnzXPMAXi4bJMl9be.cfi3/qxIf
 $ hashcat -m 1800 -a 0 -o task.txt unix.lst wordlist/rockyou.txt --force --self-test-disable #took like 1 hr
 ```
 4. ```hashcat -m 160 -a 0 -o task.txt "e5d8870e5bdd26602cab8dbe07a942c8669e56d6:tryhackme" /usr/share/wordlists/rockyou.txt --force```
+
+```console
+hashcat -m 3200 -a 0 -o crack.txt '$2a$06$7yoU3Ng8dHTXphAg913cyO6Bjs3K5lBnwq5FJyA6d01pMSrddr1ZG' /usr/share/wordlists/rockyou.txt --force
+1800
+$6$GQXVvW4EuM$ehD6jWiMsfNorxy5SINsgdlxmAEl3.yif0/c3NqzGLa0P.S7KRDYjycw5bnYkF5ZtB8wQy8KnskuWQS3Yr1wQ0
+hashcat -m 1800 -a 0 -o crack.txt '$6$xQmTDVmT$hgSLG3ebs.8Tc/F4qqXNnvBBnG736EWpWKaprFVARjAsZ6JyoL4WaJdGv5.qddMWF4/MoJgN6Hekri8wyJ97k/' /usr/share/wordlists/rockyou.txt --force
+```
+
+
+$6$xQmTDVmT$hgSLG3ebs.8Tc/F4qqXNnvBBnG736EWpWKaprFVARjAsZ6JyoL4WaJdGv5.qddMWF4/MoJgN6Hekri8wyJ97k/
