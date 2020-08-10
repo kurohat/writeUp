@@ -7,11 +7,9 @@ There are 2 open ports:
 - 22/tcp open  ssh
 - 80/tcp open  http
 
-If web is up, I alway start with running `gobuster` to brute forcing web directory. While `gobuster` is running, I explore the web, or walking the "happy path" by use the web in the way it was meant to be used by a normal user.
+If web is up, I alway start with running `gobuster` to brute forcing web directory. While `gobuster` is running, I explore the web or walking the "happy path" by using the web in the way it was meant to be used by a normal user.
 
 ## rabbit hole + user credential
-**Pls skip rading this if you dont wanna know what I fell into**
-
 I start by checking the source code and I found this:
 `<!--(Check console for extra surprise!)-->`. ofc I open dev-tool and check what is in the console. I found the array with then pokemon name...
 ```js
