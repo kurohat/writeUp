@@ -37,15 +37,15 @@ copy `/etc/shadow` to ur kali. now run john to crack it using `/usr/share/wordli
 
 ```console
 kali@kali:~/THM/Overpass$ sudo john -wordlist=/usr/share/wordlists/fasttrack.txt shadow.txt
-kali@kali:~/THM/Overpass$ sudo john --show shadow.txt # checkc cracked password
+kali@kali:~/THM/Overpass$ sudo john --show shadow.txt # check cracked password
 ```
 
 # Research - Analyse the code 
 clone backdoor from github by executing `git clone https://github.com/NinjaJc01/ssh-backdoor`
 1.  What's the default hash for the backdoor? 
 
-
 check for `hash` in `main.go`
+
 2. What's the hardcoded salt for the backdoor?
 
 check function `passwordHandler`
@@ -55,7 +55,7 @@ check function `passwordHandler`
 go back to wireshark and check tcp stream. when the attacker execute `backdoor`
 4. Crack the hash using rockyou and a cracking tool of your choice. What's the password?
 
-use [hash identifier](https://www.onlinehashcrack.com/hash-identification.php) to indentify the hash. We will use hashcat to crack the hash. check hashcat [example hash](https://hashcat.net/wiki/doku.php?id=example_hashes) to find out which the hash+salt format for md5.
+use [hash identifier](https://www.onlinehashcrack.com/hash-identification.php) to indentify the hash. We will use hashcat to crack the hash. check hashcat [example hash](https://hashcat.net/wiki/doku.php?id=example_hashes) to find out which the hash+salt format for hash type we got from hash identifier.
 
 ```console
 $ hashcat -m <operation mode> -a 0 -o crack.txt 'passwordhash:salt' /usr/share/wordlists/rockyou.txt --force
@@ -76,7 +76,7 @@ ssh-backdoor  user.txt  www
 ```
 grab user flag !!
 
-The next step is looking for `SUID`, if you dont know what `SUID` is, pls do some research by youself. Anyway, I use suid3num.py to enumerate `SUID`. You can find the tool on github [link](https://github.com/Anon-Exploiter/SUID3NUM). Tranfer the script to victim server and run it
+I try to run `sudo -l` using the james's password which we recived from .pcap file before. It didnt work, Seem like the attacker changed it. Next step is looking for `SUID`, if you dont know what `SUID` is, pls do some research by youself. Anyway, I use suid3num.py to enumerate `SUID`. You can find the tool on github [link](https://github.com/Anon-Exploiter/SUID3NUM). Tranfer the script to victim server and run it
 ```
 [~] Custom SUID Binaries (Interesting Stuff)
 ------------------------------
@@ -103,7 +103,7 @@ GNU long options:
 	--debugger
 	--dump-po-strings
 ```
-yo bing go it is just a copy paste of /bin/bash but it a suid file. Try to run `bash -help`, you will get the same output. so let check [GTFOBINs](https://gtfobins.github.io/gtfobins/bash/#suid). focus on `#suid` read and observe !
+Bing Go!! it is just a copy/paste of `/bin/bash` but it is a suid file. Try to run `bash -help`, you will get the same output. so let check [GTFOBINs](https://gtfobins.github.io/gtfobins/bash/#suid). focus on `#suid` read and observe !
 
 
 now let exlpoit it by run `-p`
