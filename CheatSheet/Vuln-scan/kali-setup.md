@@ -1,11 +1,12 @@
 # general
 ```console
-kali@kali:~$ sudo apt-get install gobuster
-kali@kali:~$ sudo apt-get install python3-pip
-kali@kali:~$ sudo apt-get install openvpn
-kali@kali:~$ sudo apt-get install seclists
+kali@kali:~$ sudo apt-get install -y gobuster
+kali@kali:~$ sudo apt-get install -y python3-pip
+kali@kali:~$ sudo apt-get install -y openvpn
+kali@kali:~$ sudo apt-get install -y seclists
 kali@kali:/opt$ sudo wget https://raw.githubusercontent.com/Anon-Exploiter/SUID3NUM/master/suid3num.py
-kali@kali:~$ sudo apt-get install golang
+kali@kali:~$ sudo apt-get install -y golang
+kali@kali:~$ sudo apt-get install -y steghide
 ```
 # terminator
 - [unlimited-scroll](https://askubuntu.com/questions/618464/unlimited-scroll-in-terminator) 
