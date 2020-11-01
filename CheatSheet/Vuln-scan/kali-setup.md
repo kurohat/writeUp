@@ -1,3 +1,5 @@
+# todo:
+- [ ] https://github.com/DominicBreuker/pspy
 # general
 ```console
 kali@kali:~$ sudo apt-get install -y gobuster
@@ -42,7 +44,8 @@ kali@kali:/opt$ sudo cp privilege-escalation-awesome-scripts-suite/winPEAS/winPE
 kali@kali:/opt$ sudo cp privilege-escalation-awesome-scripts-suite/linPEAS/linpeas.sh privesc/
 ```
 
-# Evilnigx
+# Sipvicious
+- https://github.com/EnableSecurity/sipvicious
 ```console
-
+$ sudo pip3 install sipvicious
 ```
