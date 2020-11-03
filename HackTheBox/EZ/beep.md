@@ -107,7 +107,7 @@ AMPMGRUSER=admin
 #AMPMGRPASS=amp111
 AMPMGRPASS=jEhdIekWmdjE
 ```
-yep we got admin cerdential `admin:jEhdIekWmdjE`. let log into `Elastix`, ofc it works!! on the admin page I found this!
+yep we got admin credential `admin:jEhdIekWmdjE`. let log into `Elastix`, ofc it works!! on the admin page I found this!
 ![version](../pic/beep.png)
 
 # Root 1st way

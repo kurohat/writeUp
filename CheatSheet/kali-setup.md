@@ -9,6 +9,7 @@ kali@kali:~$ sudo apt-get install -y seclists
 kali@kali:/opt$ sudo wget https://raw.githubusercontent.com/Anon-Exploiter/SUID3NUM/master/suid3num.py
 kali@kali:~$ sudo apt-get install -y golang
 kali@kali:~$ sudo apt-get install -y steghide
+kali@kali:~$ sudo apt-get install -y remmina
 ```
 # terminator
 - [unlimited-scroll](https://askubuntu.com/questions/618464/unlimited-scroll-in-terminator) 
@@ -49,3 +50,31 @@ kali@kali:/opt$ sudo cp privilege-escalation-awesome-scripts-suite/linPEAS/linpe
 ```console
 $ sudo pip3 install sipvicious
 ```
+
+# Empire
+```console
+$ cd /opt
+$ git clone https://github.com/BC-SECURITY/Empire.git
+$ cd Empire    
+$ sudo ./setup/install.sh    
+```
+
+# Starkiller
+- Empire is requried
+## Installing
+```console
+$ cd /opt
+$ # Download an up to date version of starkiller from the BC-Security Github repo - https://github.com/BC-SECURITY/Starkiller/releases 
+$ chmod +x starkiller-1.X.X.AppImage
+$ sudo ./starkiller-1.X.X.AppImage --no-sandbox
+```
+## Setting Up Starkiller
+```console
+$ cd /opt/Empire
+$ sudo ./empire --rest # on 1st terminal run empire
+$ sudo ./starkiller-1.X.X.AppImage --no-sandbox # 2nd run starkiller!
+```
+Default Credentials:
+- uri: 127.0.0.1:1337
+- user: empireadmin
+- pass: password123

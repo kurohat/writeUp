@@ -101,7 +101,7 @@ $ona_contexts=array (
 );
 ```
 # foothold as Jimmy
-we got a cerdential `ona_sys:n1nj4W4rri0R!` so it is a mysqli cerdential?
+we got a credential `ona_sys:n1nj4W4rri0R!` so it is a mysqli credential?
 ```console
 $ mysql -u ona_sys -p n1nj4W4rri0R!
 $ which bash

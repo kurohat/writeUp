@@ -34,7 +34,7 @@ so as you can see, we got a password list + ssh key (RSA) encrypted with AES. I 
 
 let start with convert encrypted ssh key to a format that john can understand. then use john to crack the password. we will use as our password list.
 ```console
-kali@kali:~/THM/gamingserver$ sudopython /usr/share/john/ssh2john.py secretKey s > ssh2john.txt
+kali@kali:~/THM/gamingserver$ sudo python /usr/share/john/ssh2john.py secretKey s > ssh2john.txt
 kali@kali:~/THM/gamingserver$ sudo john --wordlist=dict.lst ssh2john.txt
 .
 .
