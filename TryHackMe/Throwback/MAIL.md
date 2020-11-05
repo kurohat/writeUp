@@ -226,3 +226,4 @@ Active sessions
   --  ----  ----                     -----------                              ----------
   1         meterpreter x86/windows  THROWBACK-WS01\BlaireJ @ THROWBACK-WS01  10.50.9.18:443 -> 10.200.11.222:49808 (10.200.11.222)
 ```
+seem like we just gain access to WS01

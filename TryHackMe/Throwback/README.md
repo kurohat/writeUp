@@ -30,12 +30,25 @@ Nmap scan report for 10.200.11.230
 Nmap scan report for 10.200.11.232
 ```
 
-4 hosts
+## hosts
 - FW01 = 10.200.11.138
 - PROD = 10.200.11.219
 - MAIL = 10.200.11.232
 - **HOW IS 10.200.11.230? DC01?** : I try to ping this address and it return TTL 64, so I guess it is me lol
-
+```
+meterpreter > run arp_scanner -r 10.200.11.0/24
+[*] ARP Scanning 10.200.11.0/24
+[*] IP: 10.200.11.1 MAC 02:eb:1c:a4:33:73
+[*] IP: 10.200.11.79 MAC 02:b9:b5:da:b7:43
+[*] IP: 10.200.11.118 MAC 02:01:7d:c6:0c:a1
+[*] IP: 10.200.11.117 MAC 02:2a:19:4e:a4:45
+[*] IP: 10.200.11.138 MAC 02:4c:02:23:6c:65
+[*] IP: 10.200.11.176 MAC 02:d3:42:f3:9e:1b
+[*] IP: 10.200.11.222 MAC 02:7b:c6:d0:59:69
+[*] IP: 10.200.11.232 MAC 02:e4:2b:d1:10:01
+[*] IP: 10.200.11.243 MAC 02:bf:e2:f4:b7:c9
+[*] IP: 10.200.11.255 MAC 02:7b:c6:d0:59:69
+```
 
 # Road map
 

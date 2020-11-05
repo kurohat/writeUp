@@ -251,3 +251,9 @@ now let execute our `launcher_bat` so we get a presistant shell on as ADMIN too.
 C:\Users\petersj\Downloads>update.bat
 ```
 now check `Starkiller` agents, We should have 2 agents, 1 as `ptersj` and `admin-petersj` Grab root flag and another user flag!! 
+
+# dump it like it hot
+let use `mimikatz` module on `Starkiller` to dump the hashes, select `powershell/credentials/mimikatz/logonpasswords` and run on Admin agent. We already know that antivirus is down when we did recon on the server so we dont not need to worry about it.
+
+
+when it is done, check credentials panel. All credential that we got from mimikatz should pop up.
