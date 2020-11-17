@@ -37,7 +37,7 @@ $ sudo python3 setup.py install
 ```
 # privilege-escalation-awesome-scripts-suite
 ```console
-$ sudo git clone https://github.com/SecureAuthCorp/impacket.git
+$ sudo git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git
 $ sudo mkdir privesc
 kali@kali:/opt$ sudo cp privilege-escalation-awesome-scripts-suite/winPEAS/winPEASexe/winPEAS/obj/x64/Release/winPEAS.exe privesc/winPEAS-x64.exe
 kali@kali:/opt$ sudo cp privilege-escalation-awesome-scripts-suite/winPEAS/winPEASexe/winPEAS/obj/x86/Release/winPEAS.exe privesc/winPEAS-x86.exe
