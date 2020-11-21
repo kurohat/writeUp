@@ -8,3 +8,13 @@
 6. add code cell (`+code`)
 7. run `!bash` and press play button
 8. `cd drive/'My Drive'/dothashcat/hashes` and run hashcat
+
+# Hashcat
+```console
+$ hashcat -m <op> -a 0 -o crack.txt 'hash' /usr/share/wordlists/rockyou.txt --force
+$ hashcat -m 13100 -a 0 hash.txt Pass.txt --force # kerberos 
+```
+# john
+```console
+root@kali:~# john -wordlist=/usr/share/wordlists/rockyou.txt <hash>
+```
