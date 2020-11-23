@@ -6,14 +6,14 @@
 
 # TTY shell
 ```console
-$ python -c 'import pty; pty.spawn("/bin/sh")'
+$ python -c 'import pty; pty.spawn("/bin/bash")'
 $ python3 -c 'import pty; pty.spawn("/bin/sh")'
 $ echo os.system('/bin/bash')
 $ /bin/sh -i
 ```
 now `^z` (background) it
 ```
-stty raw -echo;fg > enter + enter
+stty raw -echo;fg
 export TERM=xterm
 ```
 auto tab is good to go!
