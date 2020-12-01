@@ -5,7 +5,7 @@ all technique that Portswigger teach us, read [here](https://portswigger.net/web
 Note the email is sent to you even tho we changed the `Host header` to point to somewhere else. The plan is we will change host name to a malicious site or the site that we have a control of. The easies way to do this is user the exploit server that the Lab offers.
 
 
-I then changed host header to ``<original>.com/exploit/` and set it to myself. When I click on it I will send a GET request to the server. On the Access log, I can see that there was a incoming request for `/exploit/forgot-password?temp-forgot-password-token=<token here>`
+I then changed host header to `<original>.com/exploit/` and set it to myself. When I click on it I will send a GET request to the server. On the Access log, I can see that there was a incoming request for `/exploit/forgot-password?temp-forgot-password-token=<token here>`
 
 
 The goal is change the host header to `<original>.com/exploit/` and change `user=carlos`. Carlos will click on the email and we will then be able to see it on the access log. we will the copy the token and use it to reset carlos password!

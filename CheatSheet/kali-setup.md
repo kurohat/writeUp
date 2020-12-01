@@ -11,6 +11,10 @@ kali@kali:~$ sudo apt-get install -y golang
 kali@kali:~$ sudo apt-get install -y steghide
 kali@kali:~$ sudo apt-get install -y remmina
 ```
+or
+```console
+kali@kali:~$ sudo apt-get install -y gobuster python3-pip openvpn seclists golang steghide steghide remmina
+```
 # terminator
 - [unlimited-scroll](https://askubuntu.com/questions/618464/unlimited-scroll-in-terminator) 
 ```console
