@@ -3,6 +3,7 @@
 - suid3num.py
 - pspy
 - ltrace
+- enum4linux
 
 # TTY shell
 ```console
@@ -30,4 +31,12 @@ $ for i in d hourly daily weekly monthly; do echo; echo "--cron.$i--"; ls -l /et
 ```console
 $ set +H
 $ echo "#!/bin/bash" > shell.sh
+```
+
+# enum4linux
+@ `/usr/share/enum4linux/enum4linux.pl` by default
+- samba/smb
+```console
+/usr/share/enum4linux/enum4linux.pl -U 10.10.223.29 # user
+/usr/share/enum4linux/enum4linux.pl -S 10.10.223.29 # sharelist
 ```
