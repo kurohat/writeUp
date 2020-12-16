@@ -1,4 +1,16 @@
+## tty shell
+```console
+$ python3 -c "import pty; pty.spawn('/bin/bash')"
+www-data@startup:/$ ^Z
+zsh: suspended  nc -nlvp 6969
+                                                                                                               
+┌──(kali㉿kali)-[~/THM/startup]
+└─$ stty raw -echo;fg                                                                                148 ⨯ 1 ⚙
+[1]  + continued  nc -nlvp 6969
+# enter to go back to nc sesstion
+www-data@startup:/$ export TERM=xterm # auto tab
 
+```
 ## SSH "Konami Code" (SSH Control Sequences) 
 link [here](https://www.sans.org/blog/using-the-ssh-konami-code-ssh-control-sequences/)
 

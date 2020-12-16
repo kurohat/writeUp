@@ -5,6 +5,17 @@
 - ltrace
 - enum4linux
 
+
+# links
+- https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/
+
+# get linux OS info
+- https://www.cyberciti.biz/faq/how-to-check-os-version-in-linux-command-line/
+```console
+$ cat /etc/*release
+$ uname -a 
+```
+
 # TTY shell
 ```console
 $ python -c 'import pty; pty.spawn("/bin/bash")'
